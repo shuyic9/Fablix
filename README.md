@@ -13,7 +13,7 @@ This is a UCI CS122B Project1 made by **Spring 2024 Team XC** (Jun Xia & Shuyi C
 - createtable.sql
 ```
 
--  (Shuyi Chen)
+- shuyic9 (Shuyi Chen)
 ```
 - 
 ```
