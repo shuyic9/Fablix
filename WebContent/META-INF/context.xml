@@ -3,11 +3,11 @@
 <Context>
 
     <!-- Defines a Data Source Connecting to localhost moviedb-->
-    <Resource name="jdbc/moviedb"
+    <Resource name="jdbc/moviedbexample"
               auth="Container"
               driverClassName="com.mysql.cj.jdbc.Driver"
               type="javax.sql.DataSource"
               username="mytestuser"
               password="My6$Password"
-              url="jdbc:mysql://localhost:3306/moviedb"/>
+              url="jdbc:mysql://localhost:3306/moviedbexample"/>
 </Context>
