@@ -52,15 +52,16 @@ public class MovieListServlet extends HttpServlet {
                            "SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT g.name ORDER BY g.name SEPARATOR ', '), ', ', 3) AS genres, " +
                            "SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT CONCAT(s.name, '|', s.id) ORDER BY s.name SEPARATOR ', '), ', ', 3) AS stars, " +
                            "r.rating " +
-                           "FROM movies m " +
+                           "FROM (SELECT movieId FROM ratings ORDER BY rating DESC LIMIT 20) AS top_rated "+
+                           "JOIN movies m ON top_rated.movieId = m.Id " +
                            "JOIN genres_in_movies gm ON m.id = gm.movieId " +
                            "JOIN genres g ON gm.genreId = g.id " +
                            "JOIN stars_in_movies sm ON m.id = sm.movieId " +
                            "JOIN stars s ON sm.starId = s.id " +
                            "JOIN ratings r ON m.id = r.movieId " +
                            "GROUP BY m.id, r.rating " +
-                           "ORDER BY r.rating DESC " +
-                           "LIMIT 20;";
+                           "ORDER BY r.rating DESC;";
+
 
 
             // Perform the query
