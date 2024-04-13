@@ -15,7 +15,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-@WebServlet(name = "SingleMovieServlet", urlPatterns = "/api/movie")
+@WebServlet(name = "SingleMovieServlet", urlPatterns = "/api/single-movie")
 public class SingleMovieServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 

@@ -25,7 +25,7 @@ function handleMovieListResult(resultData) {
 
         // Concatenate the html tags with resultData jsonObject
         let rowHTML = "";
-        rowHTML += "<tr>";
+        rowHTML +=n
         rowHTML +=
             "<th>" +
             // Add a link to single-movie.html with id passed with GET url parameter
