@@ -15,12 +15,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-// Declaring a WebServlet called SingleMovieServlet, which maps to the URL "/api/single-movie"
 @WebServlet(name = "SingleMovieServlet", urlPatterns = "/api/movie")
 public class SingleMovieServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    // Create a dataSource which is registered in web.xml
     private DataSource dataSource;
 
     @Override
@@ -34,72 +32,56 @@ public class SingleMovieServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setContentType("application/json"); // Set MIME type
 
-        response.setContentType("application/json"); // Response MIME type
-
-        // Retrieve parameter id from URL request.
-        String id = request.getParameter("id");
-
-        // Output stream to STDOUT
-        PrintWriter out = response.getWriter();
+        String id = request.getParameter("id"); // Retrieve ID from request URL
+        PrintWriter out = response.getWriter(); // Output stream to STDOUT
 
         try (Connection conn = dataSource.getConnection()) {
-
-            // Construct a query with parameter represented by "?"
-            String query = "SELECT m.id, m.title, m.year, m.director, s.id as starId, s.name as starName " +
-                    "FROM movies m LEFT JOIN stars_in_movies sim ON m.id = sim.movieId " +
+            String query = "SELECT m.id, m.title, m.year, m.director, " +
+                    "GROUP_CONCAT(DISTINCT CONCAT_WS('-', s.id, s.name) SEPARATOR ', ') AS stars, " +
+                    "GROUP_CONCAT(DISTINCT g.name SEPARATOR ', ') AS genres, " +
+                    "r.rating " +
+                    "FROM movies m " +
+                    "LEFT JOIN stars_in_movies sim ON m.id = sim.movieId " +
                     "LEFT JOIN stars s ON sim.starId = s.id " +
-                    "WHERE m.id = ?";
+                    "LEFT JOIN genres_in_movies gim ON m.id = gim.movieId " +
+                    "LEFT JOIN genres g ON gim.genreId = g.id " +
+                    "LEFT JOIN ratings r ON m.id = r.movieId " +
+                    "WHERE m.id = ? " +
+                    "GROUP BY m.id, m.title, m.year, m.director, r.rating";
 
-            // Declare our statement
             PreparedStatement statement = conn.prepareStatement(query);
+            statement.setString(1, id);  // Set the ID parameter in the query
 
-            // Set the parameter represented by "?" in the query to the id we get from url
-            statement.setString(1, id);
-
-            // Perform the query
             ResultSet rs = statement.executeQuery();
-
             JsonArray jsonArray = new JsonArray();
 
-            // Iterate through each row of rs
             while (rs.next()) {
-                String movieId = rs.getString("id");
-                String movieTitle = rs.getString("title");
-                String movieYear = rs.getString("year");
-                String movieDirector = rs.getString("director");
-                String starId = rs.getString("starId");
-                String starName = rs.getString("starName");
-
-                // Create a JsonObject based on the data we retrieve from rs
                 JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("movie_id", movieId);
-                jsonObject.addProperty("movie_title", movieTitle);
-                jsonObject.addProperty("movie_year", movieYear);
-                jsonObject.addProperty("movie_director", movieDirector);
-                jsonObject.addProperty("star_id", starId);
-                jsonObject.addProperty("star_name", starName);
+                jsonObject.addProperty("movie_id", rs.getString("id"));
+                jsonObject.addProperty("movie_title", rs.getString("title"));
+                jsonObject.addProperty("movie_year", rs.getString("year"));
+                jsonObject.addProperty("movie_director", rs.getString("director"));
+                jsonObject.addProperty("stars", rs.getString("stars"));
+                jsonObject.addProperty("genres", rs.getString("genres"));
+                jsonObject.addProperty("rating", rs.getString("rating"));
 
                 jsonArray.add(jsonObject);
             }
+
             rs.close();
             statement.close();
-
-            // Write JSON string to output
             out.write(jsonArray.toString());
-            // Set response status to 200 (OK)
-            response.setStatus(200);
+            response.setStatus(HttpServletResponse.SC_OK);
 
         } catch (Exception e) {
-            // Write error message JSON object to output
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("errorMessage", e.getMessage());
             out.write(jsonObject.toString());
 
-            // Log error to localhost log
             request.getServletContext().log("Error:", e);
-            // Set response status to 500 (Internal Server Error)
-            response.setStatus(500);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         } finally {
             out.close();
         }
