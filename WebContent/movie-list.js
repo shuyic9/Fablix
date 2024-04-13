@@ -15,46 +15,33 @@
  */
 function handleMovieListResult(resultData) {
     console.log("handleMovieListResult: populating movie table from resultData");
-
-    // Populate the star table
-    // Find the empty table body by id "movieList_table_body"
     let starTableBodyElement = jQuery("#movieList_table_body");
 
-    // Iterate through resultData, no more than 20 entries
     for (let i = 0; i < Math.min(20, resultData.length); i++) {
-
-        // Concatenate the html tags with resultData jsonObject
-        let rowHTML = "";
-        rowHTML +=n
-        rowHTML +=
-            "<th>" +
-            // Add a link to single-movie.html with id passed with GET url parameter
-            '<a href="single-movie.html?id=' + resultData[i]['movie_id'] + '">'
-            + resultData[i]["movie_title"] +     // display movie_name for the link text
-            '</a>' +
-            "</th>";
-        rowHTML += "<th>" + resultData[i]["movie_year"] + "</th>";
-        rowHTML += "<th>" + resultData[i]["movie_director"] + "</th>";
-        rowHTML += "<th>" + resultData[i]["movie_genres"] + "</th>";
+        let rowHTML = "<tr>"; // Start the table row
+        rowHTML += "<td>" +
+            '<a href="single-movie.html?id=' + resultData[i]['movie_id'] + '">' +
+            resultData[i]["movie_title"] +
+            '</a>' + "</td>";
+        rowHTML += "<td>" + resultData[i]["movie_year"] + "</td>";
+        rowHTML += "<td>" + resultData[i]["movie_director"] + "</td>";
+        rowHTML += "<td>" + resultData[i]["movie_genres"] + "</td>";
 
         let starsHTML = "";
         let starsArray = resultData[i]["movie_stars"].split(", ");
         for (let star of starsArray) {
             let starInfo = star.split("|");
-            let starName = starInfo[0];
-            let starId = starInfo[1];
-            starsHTML += '<a href="single-star.html?id=' + starId + '">' + starName + '</a>, ';
+            starsHTML += '<a href="single-star.html?id=' + starInfo[1] + '">' + starInfo[0] + '</a>, ';
         }
-        starsHTML = starsHTML.slice(0, -2); // remove the last comma and space
+        starsHTML = starsHTML.slice(0, -2); // Remove the last comma and space
+        rowHTML += "<td>" + starsHTML + "</td>";
+        rowHTML += "<td>" + resultData[i]["movie_rating"] + "</td>";
+        rowHTML += "</tr>"; // End the table row
 
-        rowHTML += "<th>" + starsHTML + "</th>";
-        rowHTML += "<th>" + resultData[i]["movie_rating"] + "</th>";
-        rowHTML += "</tr>";
-
-        // Append the row created to the table body, which will refresh the page
         starTableBodyElement.append(rowHTML);
     }
 }
+
 
 
 /**
