@@ -1,73 +1,50 @@
-/**
- * This example is following frontend and backend separation.
- *
- * Before this .js is loaded, the html skeleton is created.
- *
- * This .js performs three steps:
- *      1. Get parameter from request URL so it know which id to look for
- *      2. Use jQuery to talk to backend API to get the json data.
- *      3. Populate the data to correct html elements.
- */
-
-
-/**
- * Retrieve parameter from request URL, matching by parameter name
- * @param target String
- * @returns {*}
- */
 function getParameterByName(target) {
-    // Get request URL
     let url = window.location.href;
-    // Encode target parameter name to url encoding
     target = target.replace(/[\[\]]/g, "\\$&");
-
-    // Ues regular expression to find matched parameter value
     let regex = new RegExp("[?&]" + target + "(=([^&#]*)|&|#|$)"),
         results = regex.exec(url);
     if (!results) return null;
     if (!results[2]) return '';
-
-    // Return the decoded parameter value
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
-/**
- * Handles the data returned by the API, read the jsonObject and populate data into html elements
- * @param resultData jsonObject
- */
-
 function handleResult(resultData) {
-
     console.log("handleResult: populating star info from resultData");
 
+    if (!resultData || resultData.length === 0) {
+        console.error("No data received or data is empty");
+        return;
+    }
+
     let starInfoElement = jQuery("#star_info");
+    starInfoElement.empty(); // Clear previous content
+
+    let moviesHTML = "<span>Movies: ";
+    resultData.forEach((movie, index) => {
+        moviesHTML += `<a href='single-movie.html?id=${movie["movie_id"]}'>${movie["movie_title"]}</a>`;
+        if (index < resultData.length - 1) { // Check if it's not the last item
+            moviesHTML += ', '; // Add a comma after each movie except the last one
+        }
+    });
+    moviesHTML += "</span>";
+
+    // Assuming star name and DOB are the same across all entries
+    let starName = resultData[0]["star_name"];
     let starDOB = resultData[0]["star_dob"] ? resultData[0]["star_dob"] : "N/A";
 
+    starInfoElement.append(`
+        <h1>${starName}</h1>
+        <h3>Date of Birth: ${starDOB}</h3>
+        <h3>${moviesHTML}</h3>
+    `);
 
-    starInfoElement.append("<p>Star Name: " + resultData[0]["star_name"] + "</p>" +
-        "<p>Date Of Birth: " + starDOB + "</p>");
-
-    console.log("handleResult: populating movie table from resultData");
-    let movieTableBodyElement = jQuery("#movie_table_body");
-
-    let rowHTML = "";
-    rowHTML += "<tr>";
-    rowHTML += "<th><a href='single-movie.html?id=" + resultData[0]["movie_id"] + "'>" + resultData[0]["movie_title"] + "</a></th>";
-    rowHTML += "<th>" + resultData[0]["movie_year"] + "</th>";
-    rowHTML += "<th>" + resultData[0]["movie_director"] + "</th>";
-    rowHTML += "</tr>";
-    movieTableBodyElement.append(rowHTML);
+    console.log("handleResult: Populated star info successfully");
 }
 
-/**
- * Once this .js is loaded, following scripts will be executed by the browser\
- */
-
 let starId = getParameterByName('id');
-
 jQuery.ajax({
     dataType: "json",
     method: "GET",
-    url: "api/single-star?id=" + starId,
-    success: (resultData) => handleResult(resultData)
+    url: `api/single-star?id=${starId}`,
+    success: handleResult
 });
