@@ -28,7 +28,6 @@ function handleResult(resultData) {
     });
     moviesHTML += "</span>";
 
-    // Assuming star name and DOB are the same across all entries
     let starName = resultData[0]["star_name"];
     let starDOB = resultData[0]["star_dob"] ? resultData[0]["star_dob"] : "N/A";
 
