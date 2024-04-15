@@ -4,9 +4,10 @@ This is a UCI CS122B Project1 made by **Spring 2024 Team XC** (Jun Xia & Shuyi C
 ---
 ## Video Demo Link
 ****
+https://youtu.be/g5Y9vy_7jiI
 ## Application URL
 ****
-
+http://18.144.4.218:8080/cs122b-spring24-team-xc-project1/
 ## Contribution
 - JackyZzZz (Jun Xia)
 ```
