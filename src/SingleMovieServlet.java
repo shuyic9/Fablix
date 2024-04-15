@@ -32,10 +32,10 @@ public class SingleMovieServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("application/json"); // Set MIME type
+        response.setContentType("application/json");
 
-        String id = request.getParameter("id"); // Retrieve ID from request URL
-        PrintWriter out = response.getWriter(); // Output stream to STDOUT
+        String id = request.getParameter("id");
+        PrintWriter out = response.getWriter();
 
         try (Connection conn = dataSource.getConnection()) {
             String query = "SELECT m.id, m.title, m.year, m.director, " +
@@ -52,7 +52,7 @@ public class SingleMovieServlet extends HttpServlet {
                     "GROUP BY m.id, m.title, m.year, m.director, r.rating";
 
             PreparedStatement statement = conn.prepareStatement(query);
-            statement.setString(1, id);  // Set the ID parameter in the query
+            statement.setString(1, id);
 
             ResultSet rs = statement.executeQuery();
             JsonArray jsonArray = new JsonArray();

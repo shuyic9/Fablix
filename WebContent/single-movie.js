@@ -27,8 +27,7 @@ function handleResult(resultData) {
     let movieInfoElement = jQuery("#movie_info");
     movieInfoElement.empty(); // Clear previous content
 
-    // Handle stars
-    let snames = movieInfo["stars"] || '';  // Default to an empty string if star_name is undefined
+    let snames = movieInfo["stars"] || '';
     let starsHTML = "";
     if (snames) {
         const id_name_array = snames.split(', ');
@@ -43,7 +42,7 @@ function handleResult(resultData) {
             }
         }
         if (starsHTML.length > 0) {
-            starsHTML = starsHTML.slice(0, -2); // Remove trailing comma and space
+            starsHTML = starsHTML.slice(0, -2);
         }
     }
 
