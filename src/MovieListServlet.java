@@ -12,8 +12,10 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 
 // Declaring a WebServlet called MovieListServlet, which maps to url "/api/movies"
@@ -42,66 +44,112 @@ public class MovieListServlet extends HttpServlet {
         // Output stream to STDOUT
         PrintWriter out = response.getWriter();
 
+        String name = request.getParameter("title");
+        String year = request.getParameter("year");
+        String director = request.getParameter("director");
+        String star = request.getParameter("star");
+
         // Get a connection from dataSource and let resource manager close the connection after usage.
         try (Connection conn = dataSource.getConnection()) {
 
-            // Declare our statement
-            Statement statement = conn.createStatement();
+            StringBuilder queryBuilder = new StringBuilder(
+                "SELECT m.id, m.title, m.year, m.director, " +
+                "SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT g.name ORDER BY g.name SEPARATOR ', '), ', ', 3) AS genres, " +
+//                "GROUP_CONCAT(DISTINCT CONCAT(s.name, '|', s.id) ORDER BY s.name SEPARATOR ', ') AS all_stars, " +
+                "GROUP_CONCAT(DISTINCT CONCAT(s.name, '|', s.id)) AS all_stars, " +
+                "r.rating " +
+                "FROM movies m " +
+                "JOIN genres_in_movies gm ON m.id = gm.movieId " +
+                "JOIN genres g ON gm.genreId = g.id " +
+                "JOIN stars_in_movies sm ON m.id = sm.movieId " +
+                "JOIN stars s ON sm.starId = s.id " +
+                "JOIN ratings r ON m.id = r.movieId "
+            );
 
-            String query = "SELECT m.id, m.title, m.year, m.director, " +
-                           "SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT g.name ORDER BY g.name SEPARATOR ', '), ', ', 3) AS genres, " +
-                           "SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT CONCAT(s.name, '|', s.id) ORDER BY s.name SEPARATOR ', '), ', ', 3) AS stars, " +
-                           "r.rating " +
-                           "FROM (SELECT movieId FROM ratings ORDER BY rating DESC LIMIT 20) AS top_rated "+
-                           "JOIN movies m ON top_rated.movieId = m.Id " +
-                           "JOIN genres_in_movies gm ON m.id = gm.movieId " +
-                           "JOIN genres g ON gm.genreId = g.id " +
-                           "JOIN stars_in_movies sm ON m.id = sm.movieId " +
-                           "JOIN stars s ON sm.starId = s.id " +
-                           "JOIN ratings r ON m.id = r.movieId " +
-                           "GROUP BY m.id, r.rating " +
-                           "ORDER BY r.rating DESC;";
+            ArrayList <String> conditions = new ArrayList<>();
+            ArrayList <Object> parameters = new ArrayList<>();
 
-
-
-            // Perform the query
-            ResultSet rs = statement.executeQuery(query);
-
-            JsonArray jsonArray = new JsonArray();
-
-            // Iterate through each row of rs
-            while (rs.next()) {
-                String movie_id = rs.getString("id");
-                String movie_title = rs.getString("title");
-                String movie_year = rs.getString("year");
-                String movie_director = rs.getString("director");
-                String movie_genres = rs.getString("genres");
-                String movie_stars = rs.getString("stars");
-                String movie_rating = rs.getString("rating");
-
-                // Create a JsonObject based on the data we retrieve from rs
-                JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("movie_id", movie_id);
-                jsonObject.addProperty("movie_title", movie_title);
-                jsonObject.addProperty("movie_year", movie_year);
-                jsonObject.addProperty("movie_director", movie_director);
-                jsonObject.addProperty("movie_genres", movie_genres);
-                jsonObject.addProperty("movie_stars", movie_stars);
-                jsonObject.addProperty("movie_rating", movie_rating);
-
-                jsonArray.add(jsonObject);
+            if (name != null && !name.isEmpty()) {
+                conditions.add("m.title LIKE ?");
+                parameters.add("%" + name + "%");
             }
-            rs.close();
-            statement.close();
+            if (year != null && !year.isEmpty()) {
+                conditions.add("m.year = ?");
+                parameters.add(year);
+            }
+            if (director != null && !director.isEmpty()) {
+                conditions.add("m.director LIKE ?");
+                parameters.add("%" + director + "%");
+            }
 
-            // Log to localhost log
-            request.getServletContext().log("getting " + jsonArray.size() + " results");
+            if (!conditions.isEmpty()) {
+                queryBuilder.append(" WHERE ");
+                queryBuilder.append(String.join(" AND ", conditions));
+            }
 
-            // Write JSON string to output
-            out.write(jsonArray.toString());
-            // Set response status to 200 (OK)
-            response.setStatus(200);
+            // only caches 100 queries, no ordering
+            queryBuilder.append(" GROUP BY m.id LIMIT 100");
 
+            try (PreparedStatement statement = conn.prepareStatement(queryBuilder.toString())) {
+
+                for (int i = 0; i < parameters.size(); i++) {
+                    statement.setObject(i + 1, parameters.get(i));
+                }
+
+                // Perform the query
+                ResultSet rs = statement.executeQuery();
+
+                JsonArray jsonArray = new JsonArray();
+
+                // Iterate through each row of rs
+                while (rs.next()) {
+                    String movie_id = rs.getString("id");
+                    String movie_title = rs.getString("title");
+                    String movie_year = rs.getString("year");
+                    String movie_director = rs.getString("director");
+                    String movie_genres = rs.getString("genres");
+                    String allStars = rs.getString("all_stars");
+//                    System.out.println(allStars);
+                    String movie_rating = rs.getString("rating");
+
+                    String[] starDetails = allStars.split(",");
+                    boolean starMatchFound = star.isEmpty() || allStars.toLowerCase().contains(star.toLowerCase());
+
+                    // Handle the star case separately
+                    if (starMatchFound) {
+                        ArrayList<String> displayedStars = new ArrayList<>();
+                        for (String singleStar : starDetails) {
+                            if (displayedStars.size() < 3) {
+                                displayedStars.add(singleStar);
+                            }
+                        }
+                        String topThreeStars = String.join(", ", displayedStars);
+                        System.out.println(topThreeStars);
+
+                        // Create a JsonObject based on the data we retrieve from rs
+                        JsonObject jsonObject = new JsonObject();
+                        jsonObject.addProperty("movie_id", movie_id);
+                        jsonObject.addProperty("movie_title", movie_title);
+                        jsonObject.addProperty("movie_year", movie_year);
+                        jsonObject.addProperty("movie_director", movie_director);
+                        jsonObject.addProperty("movie_genres", movie_genres);
+                        jsonObject.addProperty("movie_stars", topThreeStars);
+                        jsonObject.addProperty("movie_rating", movie_rating);
+
+                        jsonArray.add(jsonObject);
+                    }
+                }
+                rs.close();
+                statement.close();
+
+                // Log to localhost log
+                request.getServletContext().log("getting " + jsonArray.size() + " results");
+
+                // Write JSON string to output
+                out.write(jsonArray.toString());
+                // Set response status to 200 (OK)
+                response.setStatus(200);
+            }
         } catch (Exception e) {
 
             // Write error message JSON object to output

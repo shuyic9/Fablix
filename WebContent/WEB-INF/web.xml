@@ -4,7 +4,7 @@
          version="3.1">
     <display-name>cs122b-spring24-team-xc-project1</display-name>
     <welcome-file-list>
-        <welcome-file>movie-list.html</welcome-file>
+        <welcome-file>main.html</welcome-file>
     </welcome-file-list>
 
     <!-- Register the DataSource which defined in META-INF/context.xml-->

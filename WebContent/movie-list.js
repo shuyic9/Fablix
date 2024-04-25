@@ -17,7 +17,7 @@ function handleMovieListResult(resultData) {
     console.log("handleMovieListResult: populating movie table from resultData");
     let starTableBodyElement = jQuery("#movieList_table_body");
 
-    for (let i = 0; i < Math.min(20, resultData.length); i++) {
+    for (let i = 0; i < Math.min(100, resultData.length); i++) {
         let rowHTML = "<tr>"; // Start the table row
         rowHTML += "<td>" +
             '<a href="single-movie.html?id=' + resultData[i]['movie_id'] + '">' +
@@ -29,6 +29,7 @@ function handleMovieListResult(resultData) {
 
         let starsHTML = "";
         let starsArray = resultData[i]["movie_stars"].split(", ");
+        // console.log(starsArray);
         for (let star of starsArray) {
             let starInfo = star.split("|");
             starsHTML += '<a href="single-star.html?id=' + starInfo[1] + '">' + starInfo[0] + '</a>, ';
@@ -49,9 +50,19 @@ function handleMovieListResult(resultData) {
  */
 
 // Makes the HTTP GET request and registers on success callback function handleStarResult
-jQuery.ajax({
-    dataType: "json", // Setting return data type
-    method: "GET", // Setting request method
-    url: "api/movies", // Setting request url, which is mapped by MovieListServlet in MovieListServlet.java
-    success: (resultData) => handleMovieListResult(resultData) // Setting callback function to handle data returned successfully by the MovieListServlet
+$(document).ready(function () {
+    const urlParams = new URLSearchParams(window.location.search);
+
+    jQuery.ajax({
+        dataType: "json", // Setting return data type
+        method: "GET", // Setting request method
+        url: "api/movies", // Setting request url, which is mapped by MovieListServlet in MovieListServlet.java
+        data: {
+            title: urlParams.get('title'),
+            year: urlParams.get('year'),
+            director: urlParams.get('director'),
+            star: urlParams.get('star'),
+        },
+        success: (resultData) => handleMovieListResult(resultData) // Setting callback function to handle data returned successfully by the MovieListServlet
+    });
 });

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Main Website</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+        }
+        .header > * {
+            margin: 0 10px;
+        }
+        .search-input {
+            padding: 5px;
+        }
+        .search-bar {
+            display: flex;
+            align-items: center;
+        }
+        .genre-list, .title-list {
+            margin: 20px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .genre-list a, .title-list a {
+            text-decoration: none;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+<!--        <img src="logo.png" alt="Logo" style="height: 50px;">-->
+        <div>Fablix</div>
+        <div><a href="main.html">Home</a></div>
+        <div><a href="/checkout">Checkout</a></div>
+        <div class="search-bar">
+            <form id="search-form" action="movie-list.html" method="GET">
+                <input class="search-input" type="text" placeholder="Title" name="title">
+                <input class="search-input" type="text" placeholder="Year" name="year">
+                <input class="search-input" type="text" placeholder="Director" name="director">
+                <input class="search-input" type="text" placeholder="Star" name="star">
+                <button type="submit">Search</button>
+            </form>
+        </div>
+        <div><a href="/logout">Logout</a></div>
+    </div>
+
+    <div class="genre-list">
+        <!-- The genre list will be populated by JavaScript -->
+    </div>
+
+    <div class="title-list">
+        <!-- The title list will be populated by JavaScript -->
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+    <script src="main.js"></script>
+</body>
+</html>
