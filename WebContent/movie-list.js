@@ -25,7 +25,15 @@ function handleMovieListResult(resultData) {
             '</a>' + "</td>";
         rowHTML += "<td>" + resultData[i]["movie_year"] + "</td>";
         rowHTML += "<td>" + resultData[i]["movie_director"] + "</td>";
-        rowHTML += "<td>" + resultData[i]["movie_genres"] + "</td>";
+        // rowHTML += "<td>" + resultData[i]["movie_genres"] + "</td>";
+        let genresHTML = "";
+        let genresArray = resultData[i]["movie_genres"].split(", ");
+
+        for (let genre of genresArray) {
+            genresHTML += '<a href="movie-list.html?genre=' + genre + '">' + genre + '</a>, ';
+        }
+        genresHTML = genresHTML.slice(0, -2); // Remove the last comma and space
+        rowHTML += "<td>" + genresHTML + "</td>";
 
         let starsHTML = "";
         let starsArray = resultData[i]["movie_stars"].split(", ");
@@ -62,6 +70,7 @@ $(document).ready(function () {
             year: urlParams.get('year'),
             director: urlParams.get('director'),
             star: urlParams.get('star'),
+            genre: urlParams.get('genre'),
         },
         success: (resultData) => handleMovieListResult(resultData) // Setting callback function to handle data returned successfully by the MovieListServlet
     });

@@ -48,13 +48,14 @@ public class MovieListServlet extends HttpServlet {
         String year = request.getParameter("year");
         String director = request.getParameter("director");
         String star = request.getParameter("star");
+        String genre = request.getParameter("genre");
 
         // Get a connection from dataSource and let resource manager close the connection after usage.
         try (Connection conn = dataSource.getConnection()) {
 
             StringBuilder queryBuilder = new StringBuilder(
                 "SELECT m.id, m.title, m.year, m.director, " +
-                "SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT g.name ORDER BY g.name SEPARATOR ', '), ', ', 3) AS genres, " +
+                "GROUP_CONCAT(DISTINCT g.name ORDER BY g.name SEPARATOR ', ') AS genres, " +
                 "GROUP_CONCAT(DISTINCT CONCAT(s.name, '|', s.id) " +
                 "ORDER BY (SELECT COUNT(*) FROM stars_in_movies WHERE starId = s.id) DESC, s.name SEPARATOR ', ') AS all_stars, " +
                 "r.rating " +
@@ -108,23 +109,35 @@ public class MovieListServlet extends HttpServlet {
                     String movie_year = rs.getString("year");
                     String movie_director = rs.getString("director");
                     String movie_genres = rs.getString("genres");
+//                    System.out.println(movie_genres);
                     String allStars = rs.getString("all_stars");
 //                    System.out.println(allStars);
                     String movie_rating = rs.getString("rating");
 
                     String[] starDetails = allStars.split(",");
+                    String[] genreDetails = movie_genres.split(",");
                     boolean starMatchFound = star.isEmpty() || allStars.toLowerCase().contains(star.toLowerCase());
+                    boolean genreMatchFound = genre.isEmpty() || movie_genres.toLowerCase().contains(genre.toLowerCase());
 
-                    // Handle the star case separately
-                    if (starMatchFound) {
+                    // Handle the genre and star case separately
+                    if (genreMatchFound && starMatchFound) {
                         ArrayList<String> displayedStars = new ArrayList<>();
+                        ArrayList<String> displayedGenres = new ArrayList<>();
+
+                        for (String singleGenre : genreDetails) {
+                            if (displayedGenres.size() < 3) {
+                                displayedGenres.add(singleGenre);
+                            }
+                        }
+
                         for (String singleStar : starDetails) {
                             if (displayedStars.size() < 3) {
                                 displayedStars.add(singleStar);
                             }
                         }
                         String topThreeStars = String.join(", ", displayedStars);
-                        System.out.println(topThreeStars);
+                        String topThreeGenres = String.join(", ", displayedGenres);
+//                        System.out.println(topThreeStars);
 
                         // Create a JsonObject based on the data we retrieve from rs
                         JsonObject jsonObject = new JsonObject();
@@ -132,7 +145,7 @@ public class MovieListServlet extends HttpServlet {
                         jsonObject.addProperty("movie_title", movie_title);
                         jsonObject.addProperty("movie_year", movie_year);
                         jsonObject.addProperty("movie_director", movie_director);
-                        jsonObject.addProperty("movie_genres", movie_genres);
+                        jsonObject.addProperty("movie_genres", topThreeGenres);
                         jsonObject.addProperty("movie_stars", topThreeStars);
                         jsonObject.addProperty("movie_rating", movie_rating);
 
