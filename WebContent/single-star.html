@@ -7,6 +7,24 @@
 
     <style>
         body {
+            font-family: 'Arial', sans-serif;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+        }
+        .header > * {
+            margin: 0 10px;
+        }
+        .search-input {
+            padding: 5px;
+        }
+        .search-bar {
+            display: flex;
+            align-items: center;
+        }
+        body {
             /*background-image: url('./images/movie-wall.jpg');*/
             background-size: cover;
             background-repeat: no-repeat;
@@ -56,6 +74,23 @@
     <title>Single Star</title>
 </head>
 <body>
+
+<div class="header">
+    <div>Fablix</div>
+    <div><a href="main.html">Home</a></div>
+    <div><a href="/checkout">Checkout</a></div>
+    <div class="search-bar">
+        <form id="search-form" action="movie-list.html" method="GET">
+            <input class="search-input" type="text" placeholder="Title" name="title">
+            <input class="search-input" type="text" placeholder="Year" name="year">
+            <input class="search-input" type="text" placeholder="Director" name="director">
+            <input class="search-input" type="text" placeholder="Star" name="star">
+            <button type="submit">Search</button>
+        </form>
+    </div>
+    <div><a href="/logout">Logout</a></div>
+</div>
+
 <div class="container mt-4">
     <div id="star_info" class="mt-3">
         <!-- Star details will go here -->
