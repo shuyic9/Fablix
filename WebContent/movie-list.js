@@ -70,22 +70,40 @@ function handleMovieListResult(resultData) {
 // Makes the HTTP GET request and registers on success callback function handleStarResult
 $(document).ready(function () {
     const urlParams = new URLSearchParams(window.location.search);
-    let currentPage = parseInt(urlParams.get('page')) || 1;
 
-    const updateMovieList = function() {
+    function updateMovieList() {
         const numResults = $("#resultsPerPage").val();
         const sort = $("#sortBy").val();
+        const title = $('input[name="title"]').val();
+        const year = $('input[name="year"]').val();
+        const director = $('input[name="director"]').val();
+        const star = $('input[name="star"]').val();
+        const genre = $('input[name="genre"]').val();
+
+        console.log(`Making AJAX call with: title=${title}, year=${year}, director=${director}, star=${star}, genre=${genre}, page=${currentPage}, sort=${sort}`);
+
+        // Save the current state to session storage
+        sessionStorage.setItem('movieListState', JSON.stringify({
+            title: title,
+            year: year,
+            director: director,
+            star: star,
+            genre: genre,
+            page: currentPage,
+            numResults: numResults,
+            sort: sort
+        }));
 
         jQuery.ajax({
-            dataType: "json", // Setting return data type
-            method: "GET", // Setting request method
-            url: "api/movies", // Setting request url, which is mapped by MovieListServlet in MovieListServlet.java
+            dataType: "json",
+            method: "GET",
+            url: "api/movies",
             data: {
-                title: urlParams.get('title'),
-                year: urlParams.get('year'),
-                director: urlParams.get('director'),
-                star: urlParams.get('star'),
-                genre: urlParams.get('genre'),
+                title: title,
+                year: year,
+                director: director,
+                star: star,
+                genre: genre,
                 page: currentPage,
                 numResults: numResults,
                 sort: sort
@@ -95,9 +113,34 @@ $(document).ready(function () {
                 updateUrlParams(currentPage, numResults, sort);
                 $("#prevPage").prop('disabled', currentPage <= 1);
                 $("#nextPage").prop('disabled', resultData.length < numResults);
+                $("#currentPage").text("Page " + currentPage);
             }
         });
     }
+
+    let currentPage = 1;
+
+    const savedState = sessionStorage.getItem('movieListState');
+    if (savedState) {
+        const state = JSON.parse(savedState);
+        currentPage = state.page;
+        $("#resultsPerPage").val(state.numResults);
+        $("#sortBy").val(state.sort);
+
+        $('input[name="title"]').val(state.title);
+        $('input[name="year"]').val(state.year);
+        $('input[name="director"]').val(state.director);
+        $('input[name="star"]').val(state.star);
+        $('input[name="genre"]').val(state.genre);
+    } else {
+        $('input[name="title"]').val(urlParams.get('title') || '');
+        $('input[name="year"]').val(urlParams.get('year') || '');
+        $('input[name="director"]').val(urlParams.get('director') || '');
+        $('input[name="star"]').val(urlParams.get('star') || '');
+        $('input[name="genre"]').val(urlParams.get('genre') || '');
+    }
+
+    updateMovieList();
 
     // Pagination listeners
     $("#prevPage").click(function () {
@@ -125,6 +168,4 @@ $(document).ready(function () {
         $("#currentPage").text("Page " + currentPage);
         updateMovieList();
     });
-
-    updateMovieList();
 });
