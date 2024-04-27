@@ -27,6 +27,20 @@ function handleResult(resultData) {
     let movieInfoElement = jQuery("#movie_info");
     movieInfoElement.empty(); // Clear previous content
 
+    let genres = movieInfo["genres"] || '';
+    let genresHTML = "";
+if (genres) {
+        const genresArray = genres.split(', ');
+        for (let i = 0; i < genresArray.length; i++) {
+            genresHTML +=
+                '<a href="movie-list.html?genre=' + genresArray[i] + '">' +
+                genresArray[i] + '</a>' + ', ';
+        }
+        if (genresHTML.length > 0) {
+            genresHTML = genresHTML.slice(0, -2);
+        }
+    }
+
     let snames = movieInfo["stars"] || '';
     let starsHTML = "";
     if (snames) {
@@ -50,7 +64,7 @@ function handleResult(resultData) {
         <h1>${movieInfo.movie_title}</h1>
         <h3>Year: <span>${movieInfo.movie_year}</span></h3>
         <h3>Director: <span>${movieInfo.movie_director}</span></h3>
-        <h3>Genres: <span>${movieInfo.genres}</span></h3>
+        <h3>Genres: <span>${genresHTML}</span></h3>
         <h3>Stars: ${starsHTML}</h3> 
         <h3>Rating: <span>${movieInfo.rating}</span></h3>
     `);
