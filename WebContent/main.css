@@ -1,0 +1,28 @@
+body {
+    font-family: Arial, sans-serif;
+}
+.header {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+.header > * {
+    margin: 0 10px;
+}
+.search-input {
+    padding: 5px;
+}
+.search-bar {
+    display: flex;
+    align-items: center;
+}
+.genre-list, .title-list {
+    margin: 20px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.genre-list a, .title-list a {
+    text-decoration: none;
+    color: green;
+}
