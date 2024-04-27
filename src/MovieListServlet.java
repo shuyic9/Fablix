@@ -49,22 +49,26 @@ public class MovieListServlet extends HttpServlet {
         String director = request.getParameter("director");
         String star = request.getParameter("star");
         String genre = request.getParameter("genre");
+        String pageParam = request.getParameter("page");
+        String numResultsParam = request.getParameter("numResults");
+
+        int page = pageParam != null ? Integer.parseInt(pageParam) : 1;
+        int numResults = numResultsParam != null ? Integer.parseInt(numResultsParam) : 10;
+        int offset = (page - 1) * numResults;
 
         // Get a connection from dataSource and let resource manager close the connection after usage.
         try (Connection conn = dataSource.getConnection()) {
 
             StringBuilder queryBuilder = new StringBuilder(
                 "SELECT m.id, m.title, m.year, m.director, " +
-                "GROUP_CONCAT(DISTINCT g.name ORDER BY g.name SEPARATOR ', ') AS genres, " +
-                "GROUP_CONCAT(DISTINCT CONCAT(s.name, '|', s.id) " +
-                "ORDER BY (SELECT COUNT(*) FROM stars_in_movies WHERE starId = s.id) DESC, s.name SEPARATOR ', ') AS all_stars, " +
+                "(SELECT GROUP_CONCAT(DISTINCT g.name ORDER BY g.name SEPARATOR ', ') " +
+                "FROM genres_in_movies gm JOIN genres g ON gm.genreId = g.id WHERE gm.movieId = m.id) AS genres, " +
+                "(SELECT GROUP_CONCAT(DISTINCT CONCAT(s.name, '|', s.id) " +
+                "ORDER BY (SELECT COUNT(*) FROM stars_in_movies sim WHERE sim.starId = s.id) DESC, s.name SEPARATOR ', ') " +
+                "FROM stars_in_movies sm JOIN stars s ON sm.starId = s.id WHERE sm.movieId = m.id LIMIT 3) AS all_stars, " +
                 "r.rating " +
                 "FROM movies m " +
-                "JOIN genres_in_movies gm ON m.id = gm.movieId " +
-                "JOIN genres g ON gm.genreId = g.id " +
-                "JOIN stars_in_movies sm ON m.id = sm.movieId " +
-                "JOIN stars s ON sm.starId = s.id " +
-                "JOIN ratings r ON m.id = r.movieId "
+                "JOIN ratings r ON m.id = r.movieId"
             );
 
             ArrayList <String> conditions = new ArrayList<>();
@@ -74,13 +78,25 @@ public class MovieListServlet extends HttpServlet {
                 conditions.add("m.title LIKE ?");
                 parameters.add("%" + name + "%");
             }
+
             if (year != null && !year.isEmpty()) {
                 conditions.add("m.year = ?");
                 parameters.add(year);
             }
+
             if (director != null && !director.isEmpty()) {
                 conditions.add("m.director LIKE ?");
                 parameters.add("%" + director + "%");
+            }
+
+            if (genre != null && !genre.isEmpty()) {
+                conditions.add("EXISTS (SELECT 1 FROM genres_in_movies gm JOIN genres g ON gm.genreId = g.id WHERE gm.movieId = m.id AND g.name LIKE ?)");
+                parameters.add("%" + genre + "%");
+            }
+
+            if (star != null && !star.isEmpty()) {
+                conditions.add("EXISTS (SELECT 1 FROM stars_in_movies sm JOIN stars s ON sm.starId = s.id WHERE sm.movieId = m.id AND s.name LIKE ?)");
+                parameters.add("%" + star + "%");
             }
 
             if (!conditions.isEmpty()) {
@@ -88,14 +104,17 @@ public class MovieListServlet extends HttpServlet {
                 queryBuilder.append(String.join(" AND ", conditions));
             }
 
-            // only caches 100 queries, no ordering
-            queryBuilder.append(" GROUP BY m.id LIMIT 100");
+            // pagination
+            queryBuilder.append(" GROUP BY m.id LIMIT ? OFFSET ?");
 
             try (PreparedStatement statement = conn.prepareStatement(queryBuilder.toString())) {
 
                 for (int i = 0; i < parameters.size(); i++) {
                     statement.setObject(i + 1, parameters.get(i));
                 }
+
+                statement.setInt(parameters.size() + 1, numResults);
+                statement.setInt(parameters.size() + 2, offset);
 
                 // Perform the query
                 ResultSet rs = statement.executeQuery();
@@ -114,43 +133,33 @@ public class MovieListServlet extends HttpServlet {
 //                    System.out.println(allStars);
                     String movie_rating = rs.getString("rating");
 
-                    String[] starDetails = allStars.split(",");
-                    String[] genreDetails = movie_genres.split(",");
-                    boolean starMatchFound = star.isEmpty() || allStars.toLowerCase().contains(star.toLowerCase());
-                    boolean genreMatchFound = genre.isEmpty() || movie_genres.toLowerCase().contains(genre.toLowerCase());
+                    // Split and limit the genres and stars to the first three
+                    String[] genreDetails = movie_genres.split(", ");
+                    String[] starDetails = allStars.split(", ");
 
-                    // Handle the genre and star case separately
-                    if (genreMatchFound && starMatchFound) {
-                        ArrayList<String> displayedStars = new ArrayList<>();
-                        ArrayList<String> displayedGenres = new ArrayList<>();
-
-                        for (String singleGenre : genreDetails) {
-                            if (displayedGenres.size() < 3) {
-                                displayedGenres.add(singleGenre);
-                            }
-                        }
-
-                        for (String singleStar : starDetails) {
-                            if (displayedStars.size() < 3) {
-                                displayedStars.add(singleStar);
-                            }
-                        }
-                        String topThreeStars = String.join(", ", displayedStars);
-                        String topThreeGenres = String.join(", ", displayedGenres);
-//                        System.out.println(topThreeStars);
-
-                        // Create a JsonObject based on the data we retrieve from rs
-                        JsonObject jsonObject = new JsonObject();
-                        jsonObject.addProperty("movie_id", movie_id);
-                        jsonObject.addProperty("movie_title", movie_title);
-                        jsonObject.addProperty("movie_year", movie_year);
-                        jsonObject.addProperty("movie_director", movie_director);
-                        jsonObject.addProperty("movie_genres", topThreeGenres);
-                        jsonObject.addProperty("movie_stars", topThreeStars);
-                        jsonObject.addProperty("movie_rating", movie_rating);
-
-                        jsonArray.add(jsonObject);
+                    // Handling genres - fetch up to first three
+                    ArrayList<String> topGenres = new ArrayList<>();
+                    for (int i = 0; i < Math.min(genreDetails.length, 3); i++) {
+                        topGenres.add(genreDetails[i]);
                     }
+
+                    // Handling stars - fetch up to first three
+                    ArrayList<String> topStars = new ArrayList<>();
+                    for (int i = 0; i < Math.min(starDetails.length, 3); i++) {
+                        topStars.add(starDetails[i]);
+                    }
+
+                    // Create a JsonObject based on the data we retrieve from rs
+                    JsonObject jsonObject = new JsonObject();
+                    jsonObject.addProperty("movie_id", movie_id);
+                    jsonObject.addProperty("movie_title", movie_title);
+                    jsonObject.addProperty("movie_year", movie_year);
+                    jsonObject.addProperty("movie_director", movie_director);
+                    jsonObject.addProperty("movie_genres", String.join(", ", topGenres));
+                    jsonObject.addProperty("movie_stars", String.join(", ", topStars));
+                    jsonObject.addProperty("movie_rating", movie_rating);
+
+                    jsonArray.add(jsonObject);
                 }
                 rs.close();
                 statement.close();

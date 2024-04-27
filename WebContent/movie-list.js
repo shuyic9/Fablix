@@ -8,6 +8,13 @@
  *      2. Populate the data to correct html elements.
  */
 
+// Helper function to update the URL parameters
+function updateUrlParams(page, numResults) {
+    const url = new URL(window.location.href);
+    url.searchParams.set('page', page);
+    url.searchParams.set('numResults', numResults);
+    window.history.pushState({ path: url.href }, '', url.href);
+}
 
 /**
  * Handles the data returned by the API, read the jsonObject and populate data into html elements
@@ -16,6 +23,9 @@
 function handleMovieListResult(resultData) {
     console.log("handleMovieListResult: populating movie table from resultData");
     let starTableBodyElement = jQuery("#movieList_table_body");
+
+    // Clear previous results
+    starTableBodyElement.empty();
 
     for (let i = 0; i < Math.min(100, resultData.length); i++) {
         let rowHTML = "<tr>"; // Start the table row
@@ -56,22 +66,56 @@ function handleMovieListResult(resultData) {
 /**
  * Once this .js is loaded, following scripts will be executed by the browser
  */
-
 // Makes the HTTP GET request and registers on success callback function handleStarResult
 $(document).ready(function () {
     const urlParams = new URLSearchParams(window.location.search);
+    let currentPage = parseInt(urlParams.get('page')) || 1;
 
-    jQuery.ajax({
-        dataType: "json", // Setting return data type
-        method: "GET", // Setting request method
-        url: "api/movies", // Setting request url, which is mapped by MovieListServlet in MovieListServlet.java
-        data: {
-            title: urlParams.get('title'),
-            year: urlParams.get('year'),
-            director: urlParams.get('director'),
-            star: urlParams.get('star'),
-            genre: urlParams.get('genre'),
-        },
-        success: (resultData) => handleMovieListResult(resultData) // Setting callback function to handle data returned successfully by the MovieListServlet
+    const updateMovieList = function() {
+        const numResults = $("#resultsPerPage").val();
+
+        jQuery.ajax({
+            dataType: "json", // Setting return data type
+            method: "GET", // Setting request method
+            url: "api/movies", // Setting request url, which is mapped by MovieListServlet in MovieListServlet.java
+            data: {
+                title: urlParams.get('title'),
+                year: urlParams.get('year'),
+                director: urlParams.get('director'),
+                star: urlParams.get('star'),
+                genre: urlParams.get('genre'),
+                page: currentPage,
+                numResults: numResults
+            },
+            success: function(resultData) {
+                handleMovieListResult(resultData);
+                updateUrlParams(currentPage, numResults);
+                $("#prevPage").prop('disabled', currentPage <= 1);
+                $("#nextPage").prop('disabled', resultData.length < numResults);
+            }
+        });
+    }
+
+    // Pagination listeners
+    $("#prevPage").click(function () {
+        if (currentPage > 1) {
+            currentPage--;
+            $("#currentPage").text("Page " + currentPage);
+            updateMovieList();
+        }
     });
+
+    $("#nextPage").click(function () {
+        currentPage++;
+        $("#currentPage").text("Page " + currentPage);
+        updateMovieList();
+    });
+
+    $("#resultsPerPage").change(function () {
+        currentPage = 1;
+        $("#currentPage").text("Page " + currentPage);
+        updateMovieList();
+    });
+
+    updateMovieList();
 });
