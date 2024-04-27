@@ -9,10 +9,11 @@
  */
 
 // Helper function to update the URL parameters
-function updateUrlParams(page, numResults) {
+function updateUrlParams(page, numResults, sort) {
     const url = new URL(window.location.href);
     url.searchParams.set('page', page);
     url.searchParams.set('numResults', numResults);
+    url.searchParams.set('sort', sort);
     window.history.pushState({ path: url.href }, '', url.href);
 }
 
@@ -73,6 +74,7 @@ $(document).ready(function () {
 
     const updateMovieList = function() {
         const numResults = $("#resultsPerPage").val();
+        const sort = $("#sortBy").val();
 
         jQuery.ajax({
             dataType: "json", // Setting return data type
@@ -85,11 +87,12 @@ $(document).ready(function () {
                 star: urlParams.get('star'),
                 genre: urlParams.get('genre'),
                 page: currentPage,
-                numResults: numResults
+                numResults: numResults,
+                sort: sort
             },
             success: function(resultData) {
                 handleMovieListResult(resultData);
-                updateUrlParams(currentPage, numResults);
+                updateUrlParams(currentPage, numResults, sort);
                 $("#prevPage").prop('disabled', currentPage <= 1);
                 $("#nextPage").prop('disabled', resultData.length < numResults);
             }
@@ -112,6 +115,12 @@ $(document).ready(function () {
     });
 
     $("#resultsPerPage").change(function () {
+        currentPage = 1;
+        $("#currentPage").text("Page " + currentPage);
+        updateMovieList();
+    });
+
+    $("#sortBy").change(function () {
         currentPage = 1;
         $("#currentPage").text("Page " + currentPage);
         updateMovieList();

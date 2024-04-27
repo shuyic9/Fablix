@@ -51,6 +51,7 @@ public class MovieListServlet extends HttpServlet {
         String genre = request.getParameter("genre");
         String pageParam = request.getParameter("page");
         String numResultsParam = request.getParameter("numResults");
+        String sortParam = request.getParameter("sort");
 
         int page = pageParam != null ? Integer.parseInt(pageParam) : 1;
         int numResults = numResultsParam != null ? Integer.parseInt(numResultsParam) : 10;
@@ -104,8 +105,37 @@ public class MovieListServlet extends HttpServlet {
                 queryBuilder.append(String.join(" AND ", conditions));
             }
 
+            if (sortParam != null && !sortParam.isEmpty()) {
+                switch (sortParam) {
+                    case "title_asc_rating_desc":
+                        queryBuilder.append(" ORDER BY m.title ASC, r.rating DESC");
+                        break;
+                    case "title_asc_rating_asc":
+                        queryBuilder.append(" ORDER BY m.title ASC, r.rating ASC");
+                        break;
+                    case "title_desc_rating_desc":
+                        queryBuilder.append(" ORDER BY m.title DESC, r.rating DESC");
+                        break;
+                    case "title_desc_rating_asc":
+                        queryBuilder.append(" ORDER BY m.title DESC, r.rating ASC");
+                        break;
+                    case "rating_desc_title_asc":
+                        queryBuilder.append(" ORDER BY r.rating DESC, m.title ASC");
+                        break;
+                    case "rating_desc_title_desc":
+                        queryBuilder.append(" ORDER BY r.rating DESC, m.title DESC");
+                        break;
+                    case "rating_asc_title_asc":
+                        queryBuilder.append(" ORDER BY r.rating ASC, m.title ASC");
+                        break;
+                    case "rating_asc_title_desc":
+                        queryBuilder.append(" ORDER BY r.rating ASC, m.title DESC");
+                        break;
+                }
+            }
+
             // pagination
-            queryBuilder.append(" GROUP BY m.id LIMIT ? OFFSET ?");
+            queryBuilder.append(" LIMIT ? OFFSET ?");
 
             try (PreparedStatement statement = conn.prepareStatement(queryBuilder.toString())) {
 
