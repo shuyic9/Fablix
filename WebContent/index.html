@@ -1,0 +1,26 @@
+<!-- This page will be seen if you logged in -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fablix</title>
+</head>
+<body>
+Welcome to Fablix!
+<p id="sessionID"></p>
+<p id="lastAccessTime"></p>
+<form ACTION="#" id="cart" METHOD="post">
+    <label>Item Purchased</label>
+    <br>
+    <label>
+        <input name="item" required="required" type="text">
+    </label>
+    <input type="submit" VALUE="add">
+</form>
+<div id="item_list"></div>
+
+<!-- include your own JS file -->
+<script src='https://code.jquery.com/jquery-3.1.0.min.js'></script>
+<script type='text/javascript' src='index.js'></script>
+</body>
+</html>
