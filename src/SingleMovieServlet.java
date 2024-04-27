@@ -39,7 +39,10 @@ public class SingleMovieServlet extends HttpServlet {
 
         try (Connection conn = dataSource.getConnection()) {
             String query = "SELECT m.id, m.title, m.year, m.director, " +
-                    "GROUP_CONCAT(DISTINCT CONCAT_WS('-', s.id, s.name) SEPARATOR ', ') AS stars, " +
+//                    "GROUP_CONCAT(DISTINCT CONCAT_WS('-', s.id, s.name) SEPARATOR ', ') AS stars, " +
+                    "(SELECT GROUP_CONCAT(DISTINCT CONCAT_WS('-', s.id, s.name) " +
+                    "ORDER BY (SELECT COUNT(*) FROM stars_in_movies sim WHERE sim.starId = s.id) DESC, s.name SEPARATOR ', ') " +
+                    "FROM stars_in_movies sm JOIN stars s ON sm.starId = s.id WHERE sm.movieId = m.id LIMIT 3) AS stars, " +
                     "GROUP_CONCAT(DISTINCT g.name SEPARATOR ', ') AS genres, " +
                     "r.rating " +
                     "FROM movies m " +
