@@ -68,7 +68,7 @@ function handleMovieListResult(resultData) {
 
         // AJAX request to add the movie to the cart
         $.ajax({
-            url: '/api/cart',
+            url: 'api/cart',
             method: 'POST',
             data: { movieId: movieId },
             success: function(response) {

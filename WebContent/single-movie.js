@@ -76,14 +76,20 @@ function handleResult(resultData) {
 
 
 
-$(document).on('click', '#add-to-cart-btn', function() {
+$(document).on('submit', '#cart-form', function(event) {
+    event.preventDefault();  // Prevent the default form submission behavior
+
+    // Serialize the form data and include movieId
+    let formData = $(this).serialize() + "&movieId=" + movieId;
+
+    // Send an AJAX POST request
     $.ajax({
-        url: '/api/cart',
-        method: 'POST',
-        data: { movieId: movieId },
+        url: 'api/cart',
+        type: 'POST',
+        data: formData,
         success: function(response) {
             const resultData = JSON.parse(response);
-            if(resultData.status === "success") {
+            if (resultData.status === "success") {
                 displayMessage('some-success-element-id', "Movie added to cart successfully!", true);
             } else {
                 displayMessage('some-error-element-id', "Failed to add movie to cart: " + resultData.message, false);
@@ -102,6 +108,7 @@ function displayMessage(elementId, message, isSuccess) {
     element.addClass(isSuccess ? 'alert-success' : 'alert-danger');
     element.show().fadeOut(3000); // Adjust timing or effects as needed
 }
+
 
 
 let movieId;
