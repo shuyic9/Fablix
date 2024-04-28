@@ -51,6 +51,7 @@ public class MovieListServlet extends HttpServlet {
         String genre = request.getParameter("genre");
         String pageParam = request.getParameter("page");
         String numResultsParam = request.getParameter("numResults");
+//        System.out.println("numResultsParam: " + numResultsParam);
         String sortParam = request.getParameter("sort");
 
         int page = pageParam != null ? Integer.parseInt(pageParam) : 1;

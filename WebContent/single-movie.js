@@ -29,7 +29,7 @@ function handleResult(resultData) {
 
     let genres = movieInfo["genres"] || '';
     let genresHTML = "";
-if (genres) {
+    if (genres) {
         const genresArray = genres.split(', ');
         for (let i = 0; i < genresArray.length; i++) {
             genresHTML +=
