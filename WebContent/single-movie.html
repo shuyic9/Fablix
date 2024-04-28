@@ -15,7 +15,7 @@
 <div class="header">
     <div>Fablix</div>
     <div><a href="main.html">Home</a></div>
-    <div><a href="/cart.html">Checkout</a></div>
+    <div><a href="cart.html">Checkout</a></div>
     <div class="search-bar">
         <form id="search-form" action="movie-list.html" method="GET">
             <input class="search-input" type="text" placeholder="Title" name="title">
@@ -36,6 +36,9 @@
         Back to Movie List
     </button>
 </div>
+
+<div id="add-to-cart-success" class="alert alert-success" style="display:none;"></div>
+<div id="add-to-cart-error" class="alert alert-danger" style="display:none;"></div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>

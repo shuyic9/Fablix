@@ -29,7 +29,7 @@ function handleResult(resultData) {
 
     let genres = movieInfo["genres"] || '';
     let genresHTML = "";
-if (genres) {
+    if (genres) {
         const genresArray = genres.split(', ');
         for (let i = 0; i < genresArray.length; i++) {
             genresHTML +=
@@ -67,6 +67,7 @@ if (genres) {
         <h3>Genres: <span>${genresHTML}</span></h3>
         <h3>Stars: ${starsHTML}</h3> 
         <h3>Rating: <span>${movieInfo.rating}</span></h3>
+        <button id="add-to-cart-btn" class="btn btn-success">Add to Cart</button> 
     `);
 
     console.log("handleResult: Populated movie info successfully");
@@ -74,10 +75,42 @@ if (genres) {
 
 
 
-let movieId = getParameterByName('id');
-jQuery.ajax({
-    dataType: "json",
-    method: "GET",
-    url: `api/single-movie?id=${movieId}`,
-    success: handleResult
+
+$(document).on('click', '#add-to-cart-btn', function() {
+    $.ajax({
+        url: '/api/cart',
+        method: 'POST',
+        data: { movieId: movieId },
+        success: function(response) {
+            const resultData = JSON.parse(response);
+            if(resultData.status === "success") {
+                displayMessage('some-success-element-id', "Movie added to cart successfully!", true);
+            } else {
+                displayMessage('some-error-element-id', "Failed to add movie to cart: " + resultData.message, false);
+            }
+        },
+        error: function(xhr, status, error) {
+            displayMessage('some-error-element-id', "Failed to add movie to cart. Error: " + error, false);
+        }
+    });
+});
+
+function displayMessage(elementId, message, isSuccess) {
+    const element = $('#' + elementId);
+    element.text(message);
+    element.removeClass(isSuccess ? 'alert-danger' : 'alert-success');
+    element.addClass(isSuccess ? 'alert-success' : 'alert-danger');
+    element.show().fadeOut(3000); // Adjust timing or effects as needed
+}
+
+
+let movieId;
+$(document).ready(function() {
+    movieId = getParameterByName('id');
+    $.ajax({
+        dataType: "json",
+        method: "GET",
+        url: `api/single-movie?id=${movieId}`,
+        success: handleResult
+    });
 });
