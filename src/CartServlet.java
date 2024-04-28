@@ -43,29 +43,20 @@ public class CartServlet extends HttpServlet {
         }
 
         String movieId = request.getParameter("movieId");
-        String change = request.getParameter("change");  // "+1" for increase, "-1" for decrease
-        String remove = request.getParameter("remove");  // "true" if the item should be removed
-
-        if ("true".equals(remove) && cartItems.containsKey(movieId)) {
-            cartItems.remove(movieId);
-        } else if (change != null && cartItems.containsKey(movieId)) {
-            int quantityChange = Integer.parseInt(change);
-            int newQuantity = cartItems.get(movieId) + quantityChange;
-            if (newQuantity > 0) {
-                cartItems.put(movieId, newQuantity);
-            } else {
-                cartItems.remove(movieId);
-            }
-        } else if (movieId != null && !movieId.isEmpty() && !cartItems.containsKey(movieId)) {
-            // Assuming validation against a database is successful and the movie exists
-            cartItems.put(movieId, 1);  // Start with a quantity of 1
+        // No need for 'change' or 'remove' parameters if you always want to increment the quantity
+        if (movieId != null && !movieId.isEmpty()) {
+            cartItems.put(movieId, cartItems.getOrDefault(movieId, 0) + 1); // Increment quantity by one or add new with quantity 1
         }
 
         session.setAttribute("cartItems", cartItems);
 
-        JsonObject responseJsonObject = constructJsonResponse("success", "Cart updated successfully!");
+        // Prepare and send response
+        JsonObject responseJsonObject = new JsonObject();
+        responseJsonObject.addProperty("status", "success");
+        responseJsonObject.addProperty("message", "Cart updated successfully!");
         response.getWriter().write(responseJsonObject.toString());
     }
+
 
     private JsonObject constructJsonResponse(String status, String message) {
         JsonObject responseJsonObject = new JsonObject();
