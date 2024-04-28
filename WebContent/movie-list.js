@@ -58,39 +58,40 @@ function handleMovieListResult(resultData) {
         starsHTML = starsHTML.slice(0, -2); // Remove the last comma and space
         rowHTML += "<td>" + starsHTML + "</td>";
         rowHTML += "<td>" + resultData[i]["movie_rating"] + "</td>";
-        rowHTML += `<td><button class="btn btn-success add-to-cart" data-id="${resultData[i]['movie_id']}">Add to Cart</button></td>`;
+        rowHTML += `<td> <button class="add-to-cart btn btn-success" data-id="${resultData[i]['movie_id']}">Add to Cart</button></td>`;
         rowHTML += "</tr>"; // End the table row
 
         starTableBodyElement.append(rowHTML);
     }
-    $(document).on('click', '.add-to-cart', function() {
-        const movieId = $(this).data('id');
+}
 
-        // AJAX request to add the movie to the cart
-        $.ajax({
-            url: 'api/cart',
-            method: 'POST',
-            data: { movieId: movieId },
-            success: function(response) {
-                const resultData = JSON.parse(response);
-                if(resultData.status === "success"){
-                    displayMessage(successMessageId, "Movie added to cart successfully!");
-                } else {
-                    displayMessage(errorMessageId, "Failed to add movie to cart: " + resultData.message);
-                }
-            },
-            error: function(xhr, status, error) {
-                displayMessage(errorMessageId, "Failed to add movie to cart. Error: " + error);
-            }
+
+function displayMessage(message) {
+    alert(message);
+}
+
+
+// This .ready function focuses solely on handling the "Add to Cart" functionality.
+    $(document).ready(function() {
+        $('#movieList_table_body').on('click', '.add-to-cart', function(event) {
+            event.preventDefault();
+            let movieId = $(this).data('id')
+            $.ajax({
+                url: 'api/cart',
+                type: 'POST',
+                data: { movieId: movieId, action: 'add' },
+                success: function(response) {
+                    const resultData = JSON.parse(response);
+                    console.log("Response received:", resultData);
+                    if (resultData.status === "success") {
+                        displayMessage("Movie added to cart successfully!");
+                    } else {
+                        displayMessage("Failed to add movie to cart");
+                    }
+                },
+            });
         });
     });
-}
-
-
-function displayMessage(elementId, message) {
-    $('#' + elementId).text(message).show().fadeOut(2000);
-}
-
 
 
 /**
