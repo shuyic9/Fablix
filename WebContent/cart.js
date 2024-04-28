@@ -1,7 +1,7 @@
 let cart = $("#cart");
 
 /**
- * Handle the data returned by IndexServlet
+ * Handle the data returned by CartServlet
  * @param resultDataString jsonObject, consists of session info
  */
 function handleSessionData(resultDataString) {
@@ -52,7 +52,7 @@ function handleCartInfo(cartEvent) {
      */
     cartEvent.preventDefault();
 
-    $.ajax("api/index", {
+    $.ajax("api/cart", {
         method: "POST",
         data: cart.serialize(),
         success: resultDataString => {
@@ -65,7 +65,7 @@ function handleCartInfo(cartEvent) {
     cart[0].reset();
 }
 
-$.ajax("api/index", {
+$.ajax("api/cart", {
     method: "GET",
     success: handleSessionData
 });

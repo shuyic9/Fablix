@@ -56,6 +56,7 @@ function handleMovieListResult(resultData) {
         starsHTML = starsHTML.slice(0, -2); // Remove the last comma and space
         rowHTML += "<td>" + starsHTML + "</td>";
         rowHTML += "<td>" + resultData[i]["movie_rating"] + "</td>";
+        rowHTML += `<td><button class="btn btn-success add-to-cart" data-id="${resultData[i]['movie_id']}">Add to Cart</button></td>`;
         rowHTML += "</tr>"; // End the table row
 
         starTableBodyElement.append(rowHTML);
@@ -168,4 +169,23 @@ $(document).ready(function () {
         $("#currentPage").text("Page " + currentPage);
         updateMovieList();
     });
+    $(document).on('click', '.add-to-cart', function() {
+        const movieId = $(this).data('id');
+        console.log(`Adding movie id ${movieId} to cart`); // Debugging output
+        // Perform the server request here
+        // Example: AJAX call to your server's "add to cart" endpoint
+        $.ajax({
+            url: '/api/cart', // Ensure you have this API endpoint configured on your server
+            method: 'POST',
+            data: { movieId: movieId },
+            success: function(response) {
+                alert("Movie added to cart successfully!");
+            },
+            error: function(error) {
+                alert("Failed to add movie to cart.");
+                console.error("Error adding to cart:", error);
+            }
+        });
+    });
+
 });

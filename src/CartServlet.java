@@ -14,8 +14,8 @@ import java.util.Date;
  * This IndexServlet is declared in the web annotation below,
  * which is mapped to the URL pattern /api/index.
  */
-@WebServlet(name = "IndexServlet", urlPatterns = "/api/index")
-public class IndexServlet extends HttpServlet {
+@WebServlet(name = "IndexServlet", urlPatterns = "/api/cart")
+public class CartServlet extends HttpServlet {
 
     /**
      * handles GET requests to store session information
