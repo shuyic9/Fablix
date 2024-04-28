@@ -105,6 +105,7 @@ $(document).ready(function () {
     console.log(urlParams.get('director'));
     console.log(urlParams.get('star'));
     console.log(urlParams.get('genre'));
+    console.log(urlParams.get('firstChar'));
 
     function initSearchFields() {
         if (urlParams.toString()) { // If there are URL parameters, use them
@@ -114,6 +115,7 @@ $(document).ready(function () {
             $('input[name="director"]').val(urlParams.get('director') || '');
             $('input[name="star"]').val(urlParams.get('star') || '');
             $('input[name="genre"]').val(urlParams.get('genre') || '');
+            $('input[name="firstChar"]').val(urlParams.get('firstChar') || '');
             $("#resultsPerPage").val(urlParams.get('numResults') || '10');
             $("#sortBy").val(urlParams.get('sort') || 'title_asc_rating_desc');
         } else { // No URL parameters, assume new search and clear storage
@@ -144,8 +146,9 @@ $(document).ready(function () {
         const director = $('input[name="director"]').val();
         const star = $('input[name="star"]').val();
         const genre = urlParams.get('genre');
+        const firstChar = urlParams.get('firstChar');
 
-        console.log(`Making AJAX call with: title=${title}, year=${year}, director=${director}, star=${star}, numResults=${numResults}, genre=${genre}, page=${currentPage}, sort=${sort}`);
+        console.log(`Making AJAX call with: title=${title}, year=${year}, director=${director}, star=${star}, numResults=${numResults}, genre=${genre}, firstChar=${firstChar}, page=${currentPage}, sort=${sort}`);
 
         // Save the current state to session storage
         sessionStorage.setItem('movieListState', JSON.stringify({
@@ -154,6 +157,7 @@ $(document).ready(function () {
             director: director,
             star: star,
             genre: genre,
+            firstChar: firstChar,
             page: currentPage,
             numResults: numResults,
             sort: sort
@@ -169,6 +173,7 @@ $(document).ready(function () {
                 director: director,
                 star: star,
                 genre: genre,
+                firstChar: firstChar,
                 page: currentPage,
                 numResults: numResults,
                 sort: sort
