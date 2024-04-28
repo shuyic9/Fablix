@@ -32,11 +32,15 @@
     <div id="movie_info" class="mt-3">
         <!-- Movie details will be dynamically inserted here -->
     </div>
+<<<<<<< HEAD
     <!-- Form for adding to cart -->
     <form id="cart-form">
         <button id="add-to-cart-btn" type="submit" class="btn btn-success mt-3">Add to Cart</button>
     </form>
     <button type="button" class="btn btn-primary mt-3" onclick="window.location.href='movie-list.html';">
+=======
+    <button type="button" class="btn btn-primary mt-3" onclick="goBackToList();">
+>>>>>>> refs/remotes/origin/version_project2
         Back to Movie List
     </button>
 </div>
@@ -49,6 +53,21 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
+<script>
+    function goBackToList() {
+        const movieListState = sessionStorage.getItem('movieListState');
+        const state = JSON.parse(movieListState);
+
+        let queryString = Object.keys(state).reduce((acc, key) => {
+            if (state[key]) {
+                acc.push(`${encodeURIComponent(key)}=${encodeURIComponent(state[key])}`);
+            }
+            return acc;
+        }, []).join('&');
+
+        window.location.href = `movie-list.html?${queryString}`;
+    }
+</script>
 <script src="single-movie.js"></script>
 </body>
 </html>

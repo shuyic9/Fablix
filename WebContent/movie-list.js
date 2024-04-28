@@ -100,6 +100,42 @@ function displayMessage(elementId, message) {
 $(document).ready(function () {
     const urlParams = new URLSearchParams(window.location.search);
 
+    console.log(urlParams.get('title'));
+    console.log(urlParams.get('year'));
+    console.log(urlParams.get('director'));
+    console.log(urlParams.get('star'));
+    console.log(urlParams.get('genre'));
+
+    function initSearchFields() {
+        if (urlParams.toString()) { // If there are URL parameters, use them
+            console.log("URL parameters found, initializing search fields");
+            $('input[name="title"]').val(urlParams.get('title') || '');
+            $('input[name="year"]').val(urlParams.get('year') || '');
+            $('input[name="director"]').val(urlParams.get('director') || '');
+            $('input[name="star"]').val(urlParams.get('star') || '');
+            $('input[name="genre"]').val(urlParams.get('genre') || '');
+            $("#resultsPerPage").val(urlParams.get('numResults') || '10');
+            $("#sortBy").val(urlParams.get('sort') || 'title_asc_rating_desc');
+        } else { // No URL parameters, assume new search and clear storage
+            console.log("No URL parameters, clearing session storage");
+            sessionStorage.clear();
+        }
+    }
+
+    let currentPage = parseInt(urlParams.get('page')) || 1;
+
+    $("#resultsPerPage").change(function () {
+        currentPage = 1;
+        $("#currentPage").text("Page " + currentPage);
+        updateMovieList();
+    });
+
+    $("#sortBy").change(function () {
+        currentPage = 1;
+        $("#currentPage").text("Page " + currentPage);
+        updateMovieList();
+    });
+
     function updateMovieList() {
         const numResults = $("#resultsPerPage").val();
         const sort = $("#sortBy").val();
@@ -107,9 +143,9 @@ $(document).ready(function () {
         const year = $('input[name="year"]').val();
         const director = $('input[name="director"]').val();
         const star = $('input[name="star"]').val();
-        const genre = $('input[name="genre"]').val();
+        const genre = urlParams.get('genre');
 
-        console.log(`Making AJAX call with: title=${title}, year=${year}, director=${director}, star=${star}, genre=${genre}, page=${currentPage}, sort=${sort}`);
+        console.log(`Making AJAX call with: title=${title}, year=${year}, director=${director}, star=${star}, numResults=${numResults}, genre=${genre}, page=${currentPage}, sort=${sort}`);
 
         // Save the current state to session storage
         sessionStorage.setItem('movieListState', JSON.stringify({
@@ -147,28 +183,7 @@ $(document).ready(function () {
         });
     }
 
-    let currentPage = 1;
-
-    const savedState = sessionStorage.getItem('movieListState');
-    if (savedState) {
-        const state = JSON.parse(savedState);
-        currentPage = state.page;
-        $("#resultsPerPage").val(state.numResults);
-        $("#sortBy").val(state.sort);
-
-        $('input[name="title"]').val(state.title);
-        $('input[name="year"]').val(state.year);
-        $('input[name="director"]').val(state.director);
-        $('input[name="star"]').val(state.star);
-        $('input[name="genre"]').val(state.genre);
-    } else {
-        $('input[name="title"]').val(urlParams.get('title') || '');
-        $('input[name="year"]').val(urlParams.get('year') || '');
-        $('input[name="director"]').val(urlParams.get('director') || '');
-        $('input[name="star"]').val(urlParams.get('star') || '');
-        $('input[name="genre"]').val(urlParams.get('genre') || '');
-    }
-
+    initSearchFields();
     updateMovieList();
 
     // Pagination listeners
@@ -186,15 +201,5 @@ $(document).ready(function () {
         updateMovieList();
     });
 
-    $("#resultsPerPage").change(function () {
-        currentPage = 1;
-        $("#currentPage").text("Page " + currentPage);
-        updateMovieList();
-    });
 
-    $("#sortBy").change(function () {
-        currentPage = 1;
-        $("#currentPage").text("Page " + currentPage);
-        updateMovieList();
-    });
 });
