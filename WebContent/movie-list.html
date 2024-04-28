@@ -27,7 +27,8 @@
 <div class="header">
     <div>Fablix</div>
     <div><a href="main.html">Home</a></div>
-    <div><a href="/checkout">Checkout</a></div>
+    <!-- Update this line below with the correct path to cart.html -->
+    <div><a href="cart.html">Checkout</a></div>
     <div class="search-bar">
         <form id="search-form" action="movie-list.html" method="GET">
             <input class="search-input" type="text" placeholder="Title" name="title">
@@ -87,7 +88,8 @@
         <!-- Again, id "movieList_table_body" is useful for jQuery to find this html element -->
         <tbody id=movieList_table_body></tbody>
     </table>
-    <div id="statusMessage"></div>
+    <div id="add-to-cart-success" class="alert alert-success" style="display:none;"></div>
+    <div id="add-to-cart-error" class="alert alert-danger" style="display:none;"></div>
 
 
     <div class="row">

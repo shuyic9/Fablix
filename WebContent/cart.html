@@ -1,27 +1,42 @@
-<!-- This page will be seen if you logged in -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Fablix</title>
+    <title>Fablix Shopping Cart</title>
     <link rel="stylesheet" type="text/css" href="cart.css">
+    <!-- Bootstrap for styling -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-Welcome to Fablix!
-<p id="sessionID"></p>
-<p id="lastAccessTime"></p>
-<form ACTION="#" id="cart" METHOD="post">
-    <label>Item Purchased</label>
-    <br>
-    <label>
-        <input name="item" required="required" type="text">
-    </label>
-    <input type="submit" VALUE="add">
-</form>
-<div id="item_list"></div>
+<div class="container">
+    <h1>Welcome to Fablix!</h1>
+    <p id="sessionID"></p>
+    <p id="lastAccessTime"></p>
 
-<!-- include your own JS file -->
-<script src='https://code.jquery.com/jquery-3.1.0.min.js'></script>
+    <!-- Display for shopping cart items -->
+    <div id="item_list" class="table-responsive">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Movie Title</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total Price</th>
+                <th>Modify</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Cart items will be populated here by cart.js -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- No need for form submission for add. All interactions will be handled through AJAX in cart.js -->
+</div>
+
+<!-- Include jQuery -->
+<script src='https://code.jquery.com/jquery-3.5.1.min.js'></script>
+<script src='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>
 <script type='text/javascript' src='cart.js'></script>
 </body>
 </html>

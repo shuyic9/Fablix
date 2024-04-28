@@ -7,6 +7,8 @@
  *      1. Use jQuery to talk to backend API to get the json data.
  *      2. Populate the data to correct html elements.
  */
+const successMessageId = "add-to-cart-success";
+const errorMessageId = "add-to-cart-error";
 
 // Helper function to update the URL parameters
 function updateUrlParams(page, numResults, sort) {
@@ -61,6 +63,32 @@ function handleMovieListResult(resultData) {
 
         starTableBodyElement.append(rowHTML);
     }
+    $(document).on('click', '.add-to-cart', function() {
+        const movieId = $(this).data('id');
+
+        // AJAX request to add the movie to the cart
+        $.ajax({
+            url: '/api/cart',
+            method: 'POST',
+            data: { movieId: movieId },
+            success: function(response) {
+                const resultData = JSON.parse(response);
+                if(resultData.status === "success"){
+                    displayMessage(successMessageId, "Movie added to cart successfully!");
+                } else {
+                    displayMessage(errorMessageId, "Failed to add movie to cart: " + resultData.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                displayMessage(errorMessageId, "Failed to add movie to cart. Error: " + error);
+            }
+        });
+    });
+}
+
+
+function displayMessage(elementId, message) {
+    $('#' + elementId).text(message).show().fadeOut(2000);
 }
 
 
@@ -169,23 +197,4 @@ $(document).ready(function () {
         $("#currentPage").text("Page " + currentPage);
         updateMovieList();
     });
-    $(document).on('click', '.add-to-cart', function() {
-        const movieId = $(this).data('id');
-        console.log(`Adding movie id ${movieId} to cart`); // Debugging output
-        // Perform the server request here
-        // Example: AJAX call to your server's "add to cart" endpoint
-        $.ajax({
-            url: '/api/cart', // Ensure you have this API endpoint configured on your server
-            method: 'POST',
-            data: { movieId: movieId },
-            success: function(response) {
-                alert("Movie added to cart successfully!");
-            },
-            error: function(error) {
-                alert("Failed to add movie to cart.");
-                console.error("Error adding to cart:", error);
-            }
-        });
-    });
-
 });
