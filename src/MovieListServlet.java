@@ -53,6 +53,7 @@ public class MovieListServlet extends HttpServlet {
         String numResultsParam = request.getParameter("numResults");
 //        System.out.println("numResultsParam: " + numResultsParam);
         String sortParam = request.getParameter("sort");
+        String firstChar = request.getParameter("firstChar");
 
         int page = pageParam != null ? Integer.parseInt(pageParam) : 1;
         int numResults = numResultsParam != null ? Integer.parseInt(numResultsParam) : 10;
@@ -99,6 +100,15 @@ public class MovieListServlet extends HttpServlet {
             if (star != null && !star.isEmpty()) {
                 conditions.add("EXISTS (SELECT 1 FROM stars_in_movies sm JOIN stars s ON sm.starId = s.id WHERE sm.movieId = m.id AND s.name LIKE ?)");
                 parameters.add("%" + star + "%");
+            }
+
+            if (firstChar != null && !firstChar.isEmpty()) {
+                if (firstChar.equals("*")) {
+                    conditions.add("m.title REGEXP '^[^0-9A-Za-z]'"); // non-alphabetical
+                } else {
+                    conditions.add("m.title LIKE ?");
+                    parameters.add(firstChar + "%");
+                }
             }
 
             if (!conditions.isEmpty()) {

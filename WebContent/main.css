@@ -16,13 +16,85 @@ body {
     display: flex;
     align-items: center;
 }
-.genre-list, .title-list {
-    margin: 20px 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+
+.main-title {
+    text-align: center;
+    font-size: 32px;
+    margin-top: 20px;
+    margin-bottom: 30px;
+    color: #333;
+    font-weight: bold;
 }
-.genre-list a, .title-list a {
+
+#genre-list {
+    background-color: transparent; /* Remove the background */
+    color: #007bff; /* Set the text color to Bootstrap's primary blue */
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 items per row */
+    grid-gap: 10px;
+    padding: 20px;
+    text-align: center;
+    border-radius: 0;
     text-decoration: none;
-    color: green;
+    font-size: 18px;
+    transition: color 0.2s ease-in-out;
+}
+
+/* New style for genre links */
+#genre-list a {
+    background-color: #007bff; /* Bootstrap primary color */
+    color: white;
+    display: block;
+    padding: 15px;
+    text-align: center;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.2s ease-in-out;
+}
+
+#genre-list a:hover {
+    color: #0056b3; /* A darker blue on hover */
+    text-decoration: none; /* No underline on hover */
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+    #genre-list {
+        grid-template-columns: repeat(2, 1fr); /* 2 items per row on small screens */
+        grid-gap: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    #genre-list {
+        grid-template-columns: 1fr; /* 1 item per row on extra small screens */
+        grid-gap: 10px;
+    }
+}
+
+#title-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.char-row {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.char-row a {
+    margin: 5px;
+    padding: 8px 16px;
+    background-color: #007bff; /* Bootstrap primary color */
+    color: white;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.char-row a:hover {
+    background-color: #0056b3; /* A darker blue on hover */
 }
