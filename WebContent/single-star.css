@@ -91,10 +91,10 @@ h1 {
 }
 
 .btn-primary:hover {
-    background-color: #218838; /* Darker shade for hover */
+    background-color: #218838;
 }
 
-/* Responsive adjustments */
+
 @media (max-width: 768px) {
     .header {
         flex-direction: column;

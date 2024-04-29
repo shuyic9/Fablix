@@ -59,7 +59,6 @@ public class MovieListServlet extends HttpServlet {
         int numResults = numResultsParam != null ? Integer.parseInt(numResultsParam) : 10;
         int offset = (page - 1) * numResults;
 
-        // Get a connection from dataSource and let resource manager close the connection after usage.
         try (Connection conn = dataSource.getConnection()) {
 
             StringBuilder queryBuilder = new StringBuilder(

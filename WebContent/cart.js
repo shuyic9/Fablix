@@ -1,8 +1,7 @@
 $(document).ready(function() {
-    // Fetch cart data on page load
+
     fetchCartData();
 
-    // Function to fetch cart data from the server
     function fetchCartData() {
         $.ajax({
             url: "api/cart",
@@ -43,13 +42,10 @@ $(document).ready(function() {
         }
     }
 
-    // Event handler for modifying the quantity of an item
-    // Event handler for modifying the quantity of an item
     $(document).on('click', '.quantity-modify', function() {
         let movieId = $(this).data('id');
         let change = $(this).data('change');
 
-        // Determine the action based on the data-change attribute
         let action = (change === 1) ? 'increase' : 'decrease';
 
         $.ajax({
@@ -57,7 +53,7 @@ $(document).ready(function() {
             method: 'POST',
             data: {
                 movieId: movieId,
-                action: action  // Use 'increase' or 'decrease' as the action parameter
+                action: action
             },
             success: function(response) {
                 let resultDataJson = JSON.parse(response);
@@ -75,7 +71,7 @@ $(document).ready(function() {
             method: 'POST',
             data: {
                 movieId: movieId,
-                action: 'delete'  // Changed from `remove: true` to `action: 'delete'`
+                action: 'delete'
             },
             success: function(response) {
                 let resultDataJson = JSON.parse(response);
