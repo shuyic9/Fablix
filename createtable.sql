@@ -55,6 +55,7 @@ CREATE TABLE sales (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     customerId INT NOT NULL,
     movieId VARCHAR(10) NOT NULL DEFAULT '',
+    copies INT NOT NULL DEFAULT 1,
     FOREIGN KEY (customerId) REFERENCES customers(id),
     FOREIGN KEY (movieId) REFERENCES movies(id),
     saleDate DATE NOT NULL
