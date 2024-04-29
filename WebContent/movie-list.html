@@ -25,9 +25,10 @@
 <body>
 
 <div class="header">
-    <div>Fablix</div>
+    <img src="images/logo.png" alt="Logo" style="height: 50px;">
+    <div class="site-title">Fablix</div>
     <div><a href="main.html">Home</a></div>
-    <!-- Update this line below with the correct path to cart.html -->
+    <div><a id="resultsLink" onclick="goBackToList();">Results</a></div>
     <div><a href="cart.html">Checkout</a></div>
     <div class="search-bar">
         <form id="search-form" action="movie-list.html" method="GET">
@@ -38,34 +39,34 @@
             <button type="submit">Search</button>
         </form>
     </div>
-    <div><a href="/logout">Logout</a></div>
+<!--    <div><a href="/logout">Logout</a></div>-->
 </div>
 
 
 <div class="container mt-3">
     <div class="row mb-3">
-        <div class="col-12">
+        <div class="col-12 results-header">
             <h1>Results</h1>
-        </div>
-        <div class="col-12 dropdown-row">
-            <span class="pagination-label">Movies per page:</span>
-            <select id="resultsPerPage" class="form-control pagination-select">
-                <option value="10">10</option>
-                <option value="25">25</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-            </select>
-            <span class="sorting-label">Sort by:</span>
-            <select id="sortBy" class="form-control sorting-select">
-                <option value="title_asc_rating_desc">Title ↑, Rating ↓</option>
-                <option value="title_asc_rating_asc">Title ↑, Rating ↑</option>
-                <option value="title_desc_rating_desc">Title ↓, Rating ↓</option>
-                <option value="title_desc_rating_asc">Title ↓, Rating ↑</option>
-                <option value="rating_desc_title_asc">Rating ↓, Title ↑</option>
-                <option value="rating_desc_title_desc">Rating ↓, Title ↓</option>
-                <option value="rating_asc_title_asc">Rating ↑, Title ↑</option>
-                <option value="rating_asc_title_desc">Rating ↑, Title ↓</option>
-            </select>
+            <div class="dropdown-controls">
+                <span class="pagination-label">Movies per page:</span>
+                <select id="resultsPerPage" class="form-control pagination-select">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+                <span class="sorting-label">Sort by:</span>
+                <select id="sortBy" class="form-control sorting-select">
+                    <option value="title_asc_rating_desc">Title ↑, Rating ↓</option>
+                    <option value="title_asc_rating_asc">Title ↑, Rating ↑</option>
+                    <option value="title_desc_rating_desc">Title ↓, Rating ↓</option>
+                    <option value="title_desc_rating_asc">Title ↓, Rating ↑</option>
+                    <option value="rating_desc_title_asc">Rating ↓, Title ↑</option>
+                    <option value="rating_desc_title_desc">Rating ↓, Title ↓</option>
+                    <option value="rating_asc_title_asc">Rating ↑, Title ↑</option>
+                    <option value="rating_asc_title_desc">Rating ↑, Title ↓</option>
+                </select>
+            </div>
         </div>
     </div>
 
@@ -104,6 +105,22 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+<script>
+    function goBackToList() {
+        const movieListState = sessionStorage.getItem('movieListState');
+        const state = JSON.parse(movieListState);
+
+        let queryString = Object.keys(state).reduce((acc, key) => {
+            if (state[key]) {
+                acc.push(`${encodeURIComponent(key)}=${encodeURIComponent(state[key])}`);
+            }
+            return acc;
+        }, []).join('&');
+
+        window.location.href = `movie-list.html?${queryString}`;
+    }
+</script>
 
 <!-- Load our own JS file -->
 <!-- The path is relative to cart.html, since these two files are in the same directory -->

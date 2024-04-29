@@ -8,6 +8,25 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
+
+<div class="header">
+    <img src="images/logo.png" alt="Logo" style="height: 50px;">
+    <div class="site-title">Fablix</div>
+    <div><a href="main.html">Home</a></div>
+    <div><a id="resultsLink" onclick="goBackToList();">Results</a></div>
+    <div><a href="cart.html">Checkout</a></div>
+    <div class="search-bar">
+        <form id="search-form" action="movie-list.html" method="GET">
+            <input class="search-input" type="text" placeholder="Title" name="title">
+            <input class="search-input" type="text" placeholder="Year" name="year">
+            <input class="search-input" type="text" placeholder="Director" name="director">
+            <input class="search-input" type="text" placeholder="Star" name="star">
+            <button type="submit">Search</button>
+        </form>
+    </div>
+<!--    <div><a href="/logout">Logout</a></div>-->
+</div>
+
 <div class="container">
     <!-- Display for shopping cart items -->
     <div id="item_list" class="table-responsive">
@@ -33,6 +52,21 @@
 <!-- Include jQuery -->
 <script src='https://code.jquery.com/jquery-3.5.1.min.js'></script>
 <script src='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>
+<script>
+    function goBackToList() {
+        const movieListState = sessionStorage.getItem('movieListState');
+        const state = JSON.parse(movieListState);
+
+        let queryString = Object.keys(state).reduce((acc, key) => {
+            if (state[key]) {
+                acc.push(`${encodeURIComponent(key)}=${encodeURIComponent(state[key])}`);
+            }
+            return acc;
+        }, []).join('&');
+
+        window.location.href = `movie-list.html?${queryString}`;
+    }
+</script>
 <script type='text/javascript' src='cart.js'></script>
 </body>
 </html>
