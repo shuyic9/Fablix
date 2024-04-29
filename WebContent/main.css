@@ -5,7 +5,7 @@ body {
     display: flex;
     align-items: center;
     padding: 10px;
-    background-color: #f3f3f3; /* Example background color */
+    background-color: #f3f3f3;
 }
 
 .header > * {
@@ -14,26 +14,25 @@ body {
 
 .search-input, .header a, .header button {
     padding: 5px;
-    border: 1px solid #ddd; /* Border color */
-    background-color: white; /* Background color */
-    text-decoration: none; /* Removes underline from links */
-    color: black; /* Text color */
-    border-radius: 3px; /* Rounded corners */
-    transition: all 0.3s; /* Smooth transition for hover effect */
+    border: 1px solid #ddd;
+    background-color: white;
+    text-decoration: none;
+    color: black;
+    border-radius: 3px;
+    transition: all 0.3s;
 }
 
 .header button {
-    cursor: pointer; /* Changes the cursor to a pointer on hover */
+    cursor: pointer;
 }
 
 /* Hover effect */
 .search-input:hover, .header a:hover, .header button:hover {
-    border-color: #3498db; /* Border color on hover */
-    color: #3498db; /* Text color on hover */
-    background-color: #ecf6fd; /* Background color on hover */
+    border-color: #3498db;
+    color: #3498db;
+    background-color: #ecf6fd;
 }
 
-/* Active link styling */
 .header a.active {
     border-color: #3498db;
     color: #3498db;
@@ -100,5 +99,5 @@ body {
 }
 
 .char-row a:hover {
-    background-color: #0056b3; /* A darker blue on hover */
+    background-color: #0056b3;
 }
