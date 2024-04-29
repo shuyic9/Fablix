@@ -26,19 +26,17 @@ public class LoginServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String email = request.getParameter("username");  // Using email as the username field
+        String email = request.getParameter("username");
         String password = request.getParameter("password");
 
         JsonObject responseJsonObject = new JsonObject();
         try (Connection conn = dataSource.getConnection()) {
-            // First, check if the email exists
             String userQuery = "SELECT id, firstName, lastName, password FROM customers WHERE email = ?";
             PreparedStatement userStatement = conn.prepareStatement(userQuery);
             userStatement.setString(1, email);
             ResultSet userRs = userStatement.executeQuery();
 
             if (userRs.next()) {
-                // User exists, check password
                 String correctPassword = userRs.getString("password");
                 if (correctPassword.equals(password)) {
                     // Password is correct

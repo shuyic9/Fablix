@@ -43,7 +43,7 @@ $(document).ready(function() {
             dataType: "json",
             success: function(response) {
                 if (response.status === 'success') {
-                    clearCart();  // Clear the cart before redirecting to the confirmation page
+                    clearCart();
                 } else {
                     alert('Payment failed: ' + response.message);
                 }
@@ -55,7 +55,6 @@ $(document).ready(function() {
         });
     });
 
-    // Function to clear the shopping cart
     function clearCart() {
         $.ajax({
             url: "api/cart",
@@ -63,7 +62,7 @@ $(document).ready(function() {
             data: { action: "clear" },
             success: function(response) {
                 console.log("Cart has been cleared.");
-                window.location.href = 'confirmation.html'; // Redirect after clearing the cart
+                window.location.href = 'confirmation.html';
             },
             error: function() {
                 console.error("Failed to clear the cart.");

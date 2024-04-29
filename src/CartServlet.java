@@ -99,8 +99,8 @@ public class CartServlet extends HttpServlet {
                 case "delete":
                     cartItems.remove(movieId);
                     break;
-                case "clear": // New case to handle cart clearing
-                    cartItems.clear(); // Clears the entire cart
+                case "clear":
+                    cartItems.clear();
                     break;
                 default:
                     break;
@@ -122,7 +122,7 @@ public class CartServlet extends HttpServlet {
                     itemJson.addProperty("movieTitle", rs.getString("title"));
                     itemJson.addProperty("movieId", id);
                     itemJson.addProperty("quantity", quantity);
-                    itemJson.addProperty("price", 7);  // Fixed price at $7
+                    itemJson.addProperty("price", 7);
                     cartItemsJsonArray.add(itemJson);
                 }
                 rs.close();

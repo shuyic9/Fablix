@@ -22,14 +22,11 @@ public class LoginFilter implements Filter {
 
         System.out.println("LoginFilter: " + httpRequest.getRequestURI());
 
-        // Check if this URL is allowed to access without logging in
         if (this.isUrlAllowedWithoutLogin(httpRequest.getRequestURI())) {
-            // Keep default action: pass along the filter chain
             chain.doFilter(request, response);
             return;
         }
 
-        // Redirect to login page if the "user" attribute doesn't exist in session
         if (httpRequest.getSession().getAttribute("user") == null) {
             httpResponse.sendRedirect("login.html");
         } else {
@@ -38,11 +35,6 @@ public class LoginFilter implements Filter {
     }
 
     private boolean isUrlAllowedWithoutLogin(String requestURI) {
-        /*
-         Setup your own rules here to allow accessing some resources without logging in
-         Always allow your own login related requests(html, js, servlet, etc..)
-         You might also want to allow some CSS files, etc..
-         */
         return allowedURIs.stream().anyMatch(requestURI.toLowerCase()::endsWith);
     }
 

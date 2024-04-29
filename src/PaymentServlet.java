@@ -46,7 +46,7 @@ public class PaymentServlet extends HttpServlet {
         String lname = request.getParameter("lname");
         String card = request.getParameter("card");
         String exp = request.getParameter("exp");
-        int totalPrice = cartItems.values().stream().mapToInt(quantity -> quantity * 7).sum(); // Assume price per item is $7
+        int totalPrice = cartItems.values().stream().mapToInt(quantity -> quantity * 7).sum();
 
         JsonObject responseJsonObject = new JsonObject();
         responseJsonObject.addProperty("totalPrice", totalPrice);

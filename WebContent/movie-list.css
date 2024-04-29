@@ -55,55 +55,52 @@ body {
 
 #movieList_table {
     width: 100%;
-    border-collapse: collapse; /* Collapses the border lines */
+    border-collapse: collapse;
     margin: 20px 0;
-    background-color: #fff; /* White background for better readability */
+    background-color: #fff; /* White background for table */
     box-shadow: 0 2px 15px rgba(0,0,0,0.1); /* Subtle shadow for depth */
 }
 
 #movieList_table thead th {
-    background-color: #3498db; /* Consistent blue header */
-    color: white; /* White text for contrast */
+    background-color: #3498db;
+    color: white;
     font-size: 16px;
+    padding: 12px 15px;
     text-align: left;
-    padding: 12px 15px; /* Ample padding for spacious feel */
 }
 
 #movieList_table tbody td {
-    padding: 10px 15px; /* Uniform padding for cells */
-    border-bottom: 1px solid #ddd; /* Subtle borders for separation */
-    color: #333; /* Darker text for better readability */
+    padding: 10px 15px;
+    border-bottom: 1px solid #ddd;
+    color: #333;
     font-size: 14px;
 }
 
 #movieList_table tr:hover {
-    background-color: #f1f1f1; /* Light grey background on hover */
+    background-color: #f1f1f1; /* Hover effect for table rows */
 }
 
 #movieList_table a {
-    color: #3498db; /* Blue links for consistency with the theme */
-    text-decoration: none; /* No underline for a cleaner look */
+    color: #3498db; /* Link color */
+    text-decoration: none;
 }
 
 #movieList_table a:hover {
-    text-decoration: underline; /* Underline on hover for distinction */
+    text-decoration: underline; /* Underline on hover for links */
 }
 
-/* Button Styling within the Table */
 .add-to-cart {
-    background-color: #28a745; /* Bootstrap's green for success actions */
+    background-color: #28a745; /* Success color for add to cart button */
     color: white;
     border: none;
     padding: 8px 12px;
     border-radius: 5px;
     cursor: pointer;
-    transition: background 0.3s ease;
 }
 
 .add-to-cart:hover {
     background-color: #218838; /* Darker green on hover */
 }
-
 
 h1 {
     font-size: 3em;
@@ -111,7 +108,6 @@ h1 {
     font-family: 'Helvetica Neue', sans-serif;
     color: #3498db;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-    /*background-color: rgba(0, 0, 0, 0.5);*/
     background-color: transparent;
     display: inline-block;
     padding: 0.2em;
