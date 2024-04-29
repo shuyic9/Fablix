@@ -7,29 +7,53 @@
     <link rel="stylesheet" type="text/css" href="login.css">
 </head>
 <body>
-<h2>Login to Fablix</h2>
-<!-- Set the method to POST to avoid showing the username/password in the URL
-     The default action is disabled to allow your own implementation. -->
-<form id="login_form" method="post" action="#">
-    <label><b>Username</b></label>
-    <label>
-        <input name="username" placeholder="Enter Username" type="text">
-    </label>
-    <br>
-    <label><b>Password</b></label>
-    <label>
-        <input name="password" placeholder="Enter Password" type="password">
-    </label>
-    <br>
-    <input type="submit" value="Login">
-</form>
+<!--<h2>Login to Fablix</h2>-->
+<!--&lt;!&ndash; Set the method to POST to avoid showing the username/password in the URL-->
+<!--     The default action is disabled to allow your own implementation. &ndash;&gt;-->
+<!--<form id="login_form" method="post" action="#">-->
+<!--    <label><b>Username</b></label>-->
+<!--    <label>-->
+<!--        <input name="username" placeholder="Enter Username" type="text">-->
+<!--    </label>-->
+<!--    <br>-->
+<!--    <label><b>Password</b></label>-->
+<!--    <label>-->
+<!--        <input name="password" placeholder="Enter Password" type="password">-->
+<!--    </label>-->
+<!--    <br>-->
+<!--    <input type="submit" value="Login">-->
+<!--</form>-->
 
-<div id="login_error_message"></div>
+<!--<div id="login_error_message"></div>-->
 
-<!-- include jQuery-->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<!-- include our own JS file -->
-<script src="./login.js"></script>
+    <div class="login-container">
+        <div class="login-header">
+            <img src="images/logo.png" alt="Logo" class="logo">
+            <h2>Login to Fablix</h2>
+        </div>
+        <form id="login_form" method="post" action="#">
+            <label><b>Username</b></label>
+            <label>
+                <input name="username" placeholder="Enter Username" type="text">
+            </label>
+            <br>
+            <label><b>Password</b></label>
+            <label>
+                <input name="password" placeholder="Enter Password" type="password">
+            </label>
+            <br>
+            <input type="submit" value="Login">
+            <div id="login_error_message"></div>
+        </form>
+        <div class="copyright">
+            © 2024 <a href="https://jackyzzzz.github.io/" target="_blank">Jun Xia</a> & <a href="https://www.linkedin.com/in/shuyichen9/" target="_blank">Shuyi Chen</a> | All rights reserved.
+        </div>
+    </div>
+
+    <!-- include jQuery-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- include our own JS file -->
+    <script src="./login.js"></script>
 
 </body>
 </html>
