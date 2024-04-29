@@ -4,10 +4,10 @@ This is a UCI CS122B Project 2 made by **Spring 2024 Team XC** (Jun Xia & Shuyi 
 ---
 ## Video Demo Link
 ****
-
+https://youtu.be/ERg-ZoXi4UM
 ## Application URL
 ****
-
+http://54.67.81.180:8080/cs122b-spring24-team-xc-project2/
 ## Substring Matching Design
 ****
 In order to search title, director, or stars:
