@@ -1,121 +1,84 @@
-body {
-    font-family: 'Arial', sans-serif;
-}
-.header {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    background-color: #f3f3f3;
-}
-
-.header > * {
-    margin: 0 10px;
-}
-
-.search-input, .header a, .header button {
-    padding: 5px;
-    border: 1px solid #ddd;
-    background-color: white;
-    text-decoration: none;
-    color: black;
-    border-radius: 3px;
-    transition: all 0.3s;
-}
-
-.header button {
-    cursor: pointer;
-}
-
-/* Hover effect */
-.search-input:hover, .header a:hover, .header button:hover {
-    border-color: #3498db;
-    color: #3498db;
-    background-color: #ecf6fd;
-}
-
-/* Active link styling */
-.header a.active {
-    border-color: #3498db;
-    color: #3498db;
-}
-
-
-.header button {
-    padding-left: 10px;
-    padding-right: 10px;
-}
-
-.site-title {
-    font-size: 24px;
-    font-weight: bold;
-    font-family: 'Helvetica Neue', sans-serif;
-    color: #3498db;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-}
-
+/* General Table Styling */
 #movieList_table {
-    background-color: rgba(0, 0, 0, 0.7);
-    color: white;
+    width: 100%;
+    border-collapse: collapse; /* Collapses the border lines */
+    margin: 20px 0;
+    background-color: #fff; /* White background for better readability */
+    box-shadow: 0 2px 15px rgba(0,0,0,0.1); /* Subtle shadow for depth */
 }
-th, td {
-    border: 1px solid #ddd;
-    padding: 15px;
-    text-shadow: 1px 1px 3px #000;
-    font-weight: 500;
+
+#movieList_table thead th {
+    background-color: #3498db; /* Consistent blue header */
+    color: white; /* White text for contrast */
+    font-size: 16px;
+    text-align: left;
+    padding: 12px 15px; /* Ample padding for spacious feel */
 }
-thead th {
-    font-weight: bold;
-    background-color: rgba(0, 0, 0, 0.9);
+
+#movieList_table tbody td {
+    padding: 10px 15px; /* Uniform padding for cells */
+    border-bottom: 1px solid #ddd; /* Subtle borders for separation */
+    color: #333; /* Darker text for better readability */
+    font-size: 14px;
 }
+
 #movieList_table tr:hover {
-    background-color: #e0e0e0;
-    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    background-color: #f1f1f1; /* Light grey background on hover */
 }
+
 #movieList_table a {
-    color: #FFD700;
-    text-decoration: none;
+    color: #3498db; /* Blue links for consistency with the theme */
+    text-decoration: none; /* No underline for a cleaner look */
 }
+
 #movieList_table a:hover {
-    color: #FFA500;
-    text-decoration: underline;
+    text-decoration: underline; /* Underline on hover for distinction */
 }
 
-h1 {
-    font-size: 3em;
+/* Button Styling within the Table */
+.add-to-cart {
+    background-color: #28a745; /* Bootstrap's green for success actions */
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.add-to-cart:hover {
+    background-color: #218838; /* Darker green on hover */
+}
+
+/* Pagination and Sorting Controls Styling */
+.pagination-select, .sorting-select {
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.pagination-label, .sorting-label {
+    margin-right: 10px;
     font-weight: bold;
-    font-family: 'Helvetica Neue', sans-serif;
-    color: #3498db;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-    /*background-color: rgba(0, 0, 0, 0.5);*/
-    background-color: transparent;
-    display: inline-block;
-    padding: 0.2em;
-    border-radius: 10px;
-    margin-bottom: 0;
+    color: #333;
 }
 
-.pagination-select,
-.sorting-select {
-    display: inline-block;
-    width: auto;
-    margin-left: 0.5em;
+/* Header and search bar styling improvements */
+.header {
+    background-color: #3498db; /* Blue background for the header */
+    color: white;
+    padding: 10px 20px;
 }
 
-.pagination-label,
-.sorting-label {
-    display: inline-block;
+.search-input, .header button {
+    padding: 8px 12px;
 }
 
-.results-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-right: 15px;
-    max-width: 100%;
-    margin: auto;
+.header button {
+    background-color: #f8f9fa;
+    color: #333;
 }
 
-.dropdown-controls {
-    display: flex;
-    align-items: center;
+.search-bar {
+    margin-top: 20px;
 }
