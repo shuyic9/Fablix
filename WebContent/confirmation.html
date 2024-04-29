@@ -2,10 +2,45 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Order Confirmation</title>
+    <title>Confirmation</title><!-- Assuming you have CSS for styling -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="confirmation.js"></script>
 </head>
 <body>
-<h1>Thank you for your purchase!</h1>
-<p>Your order has been successfully processed.</p>
+<div class="header">
+    <img src="images/logo.png" alt="Logo" style="height: 50px;">
+    <div class="site-title">Fablix</div>
+    <div><a href="main.html">Home</a></div>
+    <div><a id="resultsLink" onclick="goBackToList();">Results</a></div>
+    <div><a href="cart.html">Checkout</a></div>
+    <div class="search-bar">
+        <form id="search-form" action="movie-list.html" method="GET">
+            <input class="search-input" type="text" placeholder="Title" name="title">
+            <input class="search-input" type="text" placeholder="Year" name="year">
+            <input class="search-input" type="text" placeholder="Director" name="director">
+            <input class="search-input" type="text" placeholder="Star" name="star">
+            <button type="submit">Search</button>
+        </form>
+    </div>
+</div>
+<h1>Purchase Confirmation</h1>
+<table id="purchased-movies" border="1">
+    <thead>
+    <tr>
+        <th>Sales ID</th>
+        <th>Movie Title</th>
+        <th>Quantity</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Data rows will be dynamically inserted here -->
+    </tbody>
+    <tfoot>
+    <tr>
+        <td colspan="2">Total Price:</td>
+        <td id="total-price"></td>
+    </tr>
+    </tfoot>
+</table>
 </body>
 </html>
