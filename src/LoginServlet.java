@@ -31,34 +31,42 @@ public class LoginServlet extends HttpServlet {
 
         JsonObject responseJsonObject = new JsonObject();
         try (Connection conn = dataSource.getConnection()) {
-            String query = "SELECT * FROM customers WHERE email = ? AND password = ?";
-            PreparedStatement statement = conn.prepareStatement(query);
-            statement.setString(1, email);
-            statement.setString(2, password);
-            ResultSet rs = statement.executeQuery();
+            // First, check if the email exists
+            String userQuery = "SELECT id, firstName, lastName, password FROM customers WHERE email = ?";
+            PreparedStatement userStatement = conn.prepareStatement(userQuery);
+            userStatement.setString(1, email);
+            ResultSet userRs = userStatement.executeQuery();
 
-            if (rs.next()) {
-                // Login successful:
-                int userId = rs.getInt("id");
-                String userFullName = rs.getString("firstName") + " " + rs.getString("lastName");
-                request.getSession().setAttribute("userId", userId); // Store user ID in session
-                request.getSession().setAttribute("user", userFullName);
-                // Store user's name in session
-                responseJsonObject.addProperty("status", "success");
-                responseJsonObject.addProperty("message", "Login successful.");
+            if (userRs.next()) {
+                // User exists, check password
+                String correctPassword = userRs.getString("password");
+                if (correctPassword.equals(password)) {
+                    // Password is correct
+                    int userId = userRs.getInt("id");
+                    String userFullName = userRs.getString("firstName") + " " + userRs.getString("lastName");
+                    request.getSession().setAttribute("userId", userId); // Store user ID in session
+                    request.getSession().setAttribute("user", userFullName); // Store user's name in session
+                    responseJsonObject.addProperty("status", "success");
+                    responseJsonObject.addProperty("message", "Login successful.");
+                } else {
+                    // Password is incorrect
+                    responseJsonObject.addProperty("status", "fail");
+                    responseJsonObject.addProperty("message", "Incorrect password.");
+                }
             } else {
-                // Login failed
+                // User does not exist
                 responseJsonObject.addProperty("status", "fail");
-                responseJsonObject.addProperty("message", "Invalid email or password.");
+                responseJsonObject.addProperty("message", "Username does not exist.");
             }
-            rs.close();
-            statement.close();
+            userRs.close();
+            userStatement.close();
         } catch (Exception e) {
             e.printStackTrace();
             responseJsonObject.addProperty("status", "fail");
             responseJsonObject.addProperty("message", "An error occurred: " + e.getMessage());
         }
 
+        response.setContentType("application/json");
         response.getWriter().write(responseJsonObject.toString());
     }
 }
