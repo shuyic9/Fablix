@@ -13,6 +13,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @WebServlet(name = "CartServlet", urlPatterns = "/api/cart")
 public class CartServlet extends HttpServlet {
@@ -39,6 +40,7 @@ public class CartServlet extends HttpServlet {
 
             JsonObject responseJsonObject = new JsonObject();
             JsonArray cartItemsJsonArray = new JsonArray();
+            AtomicInteger totalPrice = new AtomicInteger(0);
 
             cartItems.forEach((movieId, quantity) -> {
                 JsonObject itemJson = new JsonObject();
@@ -47,11 +49,13 @@ public class CartServlet extends HttpServlet {
                     statement.setString(1, movieId);
                     ResultSet rs = statement.executeQuery();
                     if (rs.next()) {
+                        int price = 7; // Fixed price per item
                         itemJson.addProperty("movieTitle", rs.getString("title"));
                         itemJson.addProperty("movieId", movieId);
                         itemJson.addProperty("quantity", quantity);
-                        itemJson.addProperty("price", 7);  // Fixed price at $7
+                        itemJson.addProperty("price", price);
                         cartItemsJsonArray.add(itemJson);
+                        totalPrice.addAndGet(quantity * price);
                     }
                     rs.close();
                     statement.close();
@@ -61,9 +65,12 @@ public class CartServlet extends HttpServlet {
             });
 
             responseJsonObject.add("cartItems", cartItemsJsonArray);
+            responseJsonObject.addProperty("totalPrice", totalPrice.get());
             response.getWriter().write(responseJsonObject.toString());
         }
     }
+
+
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession();

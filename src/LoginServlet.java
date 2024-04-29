@@ -39,7 +39,11 @@ public class LoginServlet extends HttpServlet {
 
             if (rs.next()) {
                 // Login successful:
-                request.getSession().setAttribute("user", rs.getString("firstName") + " " + rs.getString("lastName"));  // Store user's name in session
+                int userId = rs.getInt("id");
+                String userFullName = rs.getString("firstName") + " " + rs.getString("lastName");
+                request.getSession().setAttribute("userId", userId); // Store user ID in session
+                request.getSession().setAttribute("user", userFullName);
+                // Store user's name in session
                 responseJsonObject.addProperty("status", "success");
                 responseJsonObject.addProperty("message", "Login successful.");
             } else {

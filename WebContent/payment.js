@@ -1,4 +1,22 @@
 $(document).ready(function() {
+    $.ajax({
+        url: 'api/cart',
+        type: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            if (data.totalPrice) {
+                $('#total-price').text("Total Price: $" + data.totalPrice);
+            } else {
+                $('#total-price').text("Total Price: $0");
+                alert('Your cart is empty.');
+            }
+        },
+        error: function() {
+            $('#total-price').text("Failed to load total price.");
+            console.error("Failed to retrieve cart details.");
+        }
+    });
+
     $('#payment-form').submit(function(event) {
         console.log("Attempting to submit form");
         event.preventDefault();
