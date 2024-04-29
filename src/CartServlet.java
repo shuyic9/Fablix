@@ -70,8 +70,6 @@ public class CartServlet extends HttpServlet {
         }
     }
 
-
-
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession();
         synchronized (session) {
@@ -83,14 +81,15 @@ public class CartServlet extends HttpServlet {
 
             String movieId = request.getParameter("movieId");
             String action = request.getParameter("action");
-            int currentCount = cartItems.getOrDefault(movieId, 0);
 
             switch (action) {
                 case "add":
                 case "increase":
+                    int currentCount = cartItems.getOrDefault(movieId, 0);
                     cartItems.put(movieId, currentCount + 1);
                     break;
                 case "decrease":
+                    currentCount = cartItems.getOrDefault(movieId, 0);
                     if (currentCount > 1) {
                         cartItems.put(movieId, currentCount - 1);
                     } else {
@@ -100,36 +99,42 @@ public class CartServlet extends HttpServlet {
                 case "delete":
                     cartItems.remove(movieId);
                     break;
+                case "clear": // New case to handle cart clearing
+                    cartItems.clear(); // Clears the entire cart
+                    break;
                 default:
                     break;
             }
 
-            // Fetch and send updated cart details
-            JsonArray cartItemsJsonArray = new JsonArray();
-            cartItems.forEach((id, quantity) -> {
-                JsonObject itemJson = new JsonObject();
-                try (Connection conn = dataSource.getConnection()) {
-                    PreparedStatement statement = conn.prepareStatement("SELECT title FROM movies WHERE id = ?");
-                    statement.setString(1, id);
-                    ResultSet rs = statement.executeQuery();
-                    if (rs.next()) {
-                        itemJson.addProperty("movieTitle", rs.getString("title"));
-                        itemJson.addProperty("movieId", id);
-                        itemJson.addProperty("quantity", quantity);
-                        itemJson.addProperty("price", 7);  // Fixed price at $7
-                        cartItemsJsonArray.add(itemJson);
-                    }
-                    rs.close();
-                    statement.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
-
-            JsonObject responseJsonObject = new JsonObject();
-            responseJsonObject.add("cartItems", cartItemsJsonArray);
-            responseJsonObject.addProperty("status", "success");
-            response.getWriter().write(responseJsonObject.toString());
+            updateCartResponse(response, cartItems);
         }
+    }
+
+    private void updateCartResponse(HttpServletResponse response, HashMap<String, Integer> cartItems) throws IOException {
+        JsonArray cartItemsJsonArray = new JsonArray();
+        cartItems.forEach((id, quantity) -> {
+            JsonObject itemJson = new JsonObject();
+            try (Connection conn = dataSource.getConnection()) {
+                PreparedStatement statement = conn.prepareStatement("SELECT title FROM movies WHERE id = ?");
+                statement.setString(1, id);
+                ResultSet rs = statement.executeQuery();
+                if (rs.next()) {
+                    itemJson.addProperty("movieTitle", rs.getString("title"));
+                    itemJson.addProperty("movieId", id);
+                    itemJson.addProperty("quantity", quantity);
+                    itemJson.addProperty("price", 7);  // Fixed price at $7
+                    cartItemsJsonArray.add(itemJson);
+                }
+                rs.close();
+                statement.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        JsonObject responseJsonObject = new JsonObject();
+        responseJsonObject.add("cartItems", cartItemsJsonArray);
+        responseJsonObject.addProperty("status", "success");
+        response.getWriter().write(responseJsonObject.toString());
     }
 }
