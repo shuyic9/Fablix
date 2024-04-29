@@ -1,0 +1,111 @@
+body {
+    font-family: 'Arial', sans-serif;
+}
+.header {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #f3f3f3;
+}
+
+.header > * {
+    margin: 0 10px;
+}
+
+.search-input, .header a, .header button {
+    padding: 5px;
+    border: 1px solid #ddd;
+    background-color: white;
+    text-decoration: none;
+    color: black;
+    border-radius: 3px;
+    transition: all 0.3s;
+}
+
+.header button {
+    cursor: pointer;
+}
+
+.search-input:hover, .header a:hover, .header button:hover {
+    border-color: #3498db;
+    color: #3498db;
+    background-color: #ecf6fd;
+}
+
+.header a.active {
+    border-color: #3498db;
+    color: #3498db;
+}
+
+.header button {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.site-title {
+    font-size: 24px;
+    font-weight: bold;
+    font-family: 'Helvetica Neue', sans-serif;
+    color: #3498db;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+#purchased-movies {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Arial', sans-serif;
+}
+
+#purchased-movies th, #purchased-movies td {
+    text-align: left;
+    padding: 8px;
+}
+
+/* Header styles */
+#purchased-movies thead th {
+    background-color: #3498db;
+    color: white;
+}
+
+/* Footer styles */
+#purchased-movies tfoot td {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+/* Body styles */
+#purchased-movies tbody tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+
+#purchased-movies tbody tr:hover {
+    background-color: #ddd;
+}
+
+@media (max-width: 600px) {
+    #purchased-movies, #purchased-movies thead, #purchased-movies tbody, #purchased-movies th, #purchased-movies td, #purchased-movies tr {
+        display: block;
+    }
+
+    #purchased-movies thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    #purchased-movies tr { border: 1px solid #ccc; }
+
+    #purchased-movies td {
+        border: none;
+        position: relative;
+        padding-left: 50%;
+    }
+
+    #purchased-movies td:before {
+        position: absolute;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+    }
+}
