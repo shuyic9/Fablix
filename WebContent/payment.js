@@ -43,9 +43,9 @@ $(document).ready(function() {
             dataType: "json",
             success: function(response) {
                 if (response.status === 'success') {
-                    window.location.href = 'confirmation.html';
+                    clearCart();  // Clear the cart before redirecting to the confirmation page
                 } else {
-                    alert('Payment failed: Incorrect Payment Information');
+                    alert('Payment failed: ' + response.message);
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
@@ -54,4 +54,21 @@ $(document).ready(function() {
             }
         });
     });
+
+    // Function to clear the shopping cart
+    function clearCart() {
+        $.ajax({
+            url: "api/cart",
+            method: "POST",
+            data: { action: "clear" },
+            success: function(response) {
+                console.log("Cart has been cleared.");
+                window.location.href = 'confirmation.html'; // Redirect after clearing the cart
+            },
+            error: function() {
+                console.error("Failed to clear the cart.");
+                alert('Failed to clear the cart, but payment was successful. Please contact support.');
+            }
+        });
+    }
 });

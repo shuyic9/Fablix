@@ -68,13 +68,15 @@ public class PaymentServlet extends HttpServlet {
                 // Record sales for each movie in the cart
                 String salesQuery = "INSERT INTO sales (customerId, movieId, copies, saleDate) VALUES (?, ?, ?, ?)";
                 PreparedStatement salesStatement = conn.prepareStatement(salesQuery);
+                int salesCount = 0;
                 for (Map.Entry<String, Integer> entry : cartItems.entrySet()) {
                     salesStatement.setInt(1, userId);
                     salesStatement.setString(2, entry.getKey());
                     salesStatement.setInt(3, entry.getValue());
                     salesStatement.setDate(4, Date.valueOf(LocalDate.now()));
-                    salesStatement.executeUpdate();
+                    salesCount += salesStatement.executeUpdate();
                 }
+                session.setAttribute("recentSalesCount", salesCount);
                 salesStatement.close();
 
             } else {

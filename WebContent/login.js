@@ -2,24 +2,19 @@ let login_form = $("#login_form");
 
 /**
  * Handle the data returned by LoginServlet
- * @param resultDataString jsonObject
+ * @param resultDataJson jsonObject (already parsed by jQuery)
  */
-function handleLoginResult(resultDataString) {
-    let resultDataJson = JSON.parse(resultDataString);
-
+function handleLoginResult(resultDataJson) {
     console.log("handle login response");
     console.log(resultDataJson);
     console.log(resultDataJson["status"]);
 
-    // If login succeeds, it will redirect the user to cart.html
+    // If login succeeds, it will redirect the user to main.html
     if (resultDataJson["status"] === "success") {
         window.location.replace("main.html");
     } else {
-        // If login fails, the web page will display
-        // error messages on <div> with id "login_error_message"
-        console.log("show error message");
-        console.log(resultDataJson["message"]);
-        $("#login_error_message").text(resultDataJson["message"]);
+        // If login fails, display an alert with the error message
+        alert(resultDataJson["message"]); // Using alert to show the error message
     }
 }
 
@@ -29,23 +24,31 @@ function handleLoginResult(resultDataString) {
  */
 function submitLoginForm(formSubmitEvent) {
     console.log("submit login form");
-    /**
-     * When users click the submit button, the browser will not direct
-     * users to the url defined in HTML form. Instead, it will call this
-     * event handler when the event is triggered.
-     */
-    formSubmitEvent.preventDefault();
+    formSubmitEvent.preventDefault(); // Prevent the form from submitting through the browser
 
-    $.ajax(
-        "api/login", {
-            method: "POST",
-            // Serialize the login form to the data sent by POST request
-            data: login_form.serialize(),
-            success: handleLoginResult
+    // Check if all required fields are filled out
+    let email = $("#login_form input[name='username']").val().trim();
+    let password = $("#login_form input[name='password']").val().trim();
+
+    if (email === "") {
+        alert("Please fill out the email field.");
+        return; // Stop the form submission
+    } else if (password === "") {
+        alert("Please fill out the password field.");
+        return; // Stop the form submission
+    }
+
+    $.ajax("api/login", {
+        method: "POST",
+        data: login_form.serialize(),
+        dataType: "json", // Ensure jQuery expects and parses the response as JSON
+        success: handleLoginResult,
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error("Failed to process login", textStatus, errorThrown);
+            alert("Failed to process login. Please try again later."); // Show an alert on AJAX failure
         }
-    );
+    });
 }
 
 // Bind the submit action of the form to a handler function
 login_form.submit(submitLoginForm);
-
