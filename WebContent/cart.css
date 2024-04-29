@@ -1,0 +1,54 @@
+body {
+    font-family: 'Arial', sans-serif;
+}
+.header {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #f3f3f3; /* Example background color */
+}
+
+.header > * {
+    margin: 0 10px;
+}
+
+.search-input, .header a, .header button {
+    padding: 5px;
+    border: 1px solid #ddd; /* Border color */
+    background-color: white; /* Background color */
+    text-decoration: none; /* Removes underline from links */
+    color: black; /* Text color */
+    border-radius: 3px; /* Rounded corners */
+    transition: all 0.3s; /* Smooth transition for hover effect */
+}
+
+.header button {
+    cursor: pointer; /* Changes the cursor to a pointer on hover */
+}
+
+/* Hover effect */
+.search-input:hover, .header a:hover, .header button:hover {
+    border-color: #3498db; /* Border color on hover */
+    color: #3498db; /* Text color on hover */
+    background-color: #ecf6fd; /* Background color on hover */
+}
+
+/* Active link styling */
+.header a.active {
+    border-color: #3498db;
+    color: #3498db;
+}
+
+/* This is for the search button specifically */
+.header button {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.site-title {
+    font-size: 24px;
+    font-weight: bold;
+    font-family: 'Helvetica Neue', sans-serif;
+    color: #3498db;  /* Brand color or any color that fits your design */
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);  /* Subtle shadow for depth */
+}

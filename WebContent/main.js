@@ -1,25 +1,34 @@
 function handleGenreResult(resultData) {
     console.log("handleGenreResult: populating genre list from resultData");
-    let genreElement = jQuery("#genre-list");
+    let genreElement = jQuery("#genre_table_body");
 
     // Clear previous results
     genreElement.empty();
 
+    let rowHTML = "";
     for (let i = 0; i < resultData.length; i++) {
-        let rowHTML = "<tr>"; // Start the table row
-        let genresHTML = "";
-        let genresArray = resultData[i]["genreName"].split(", ");
-
-        for (let genre of genresArray) {
-            genresHTML += '<a href="movie-list.html?genre=' + genre + '">' + genre + '</a>, ';
+        // Check if we need to start a new row
+        if (i % 4 === 0) {
+            // If we are not at the first genre, we close the previous row
+            if (i !== 0) {
+                rowHTML += "</tr>";
+                genreElement.append(rowHTML);
+            }
+            // Start a new row
+            rowHTML = "<tr>";
         }
-        genresHTML = genresHTML.slice(0, -2); // Remove the last comma and space
-        rowHTML += "<td>" + genresHTML + "</td>";
-        rowHTML += "</tr>"; // End the table row
 
-        genreElement.append(rowHTML);
+        let genre = resultData[i]["genreName"];
+        rowHTML += '<td><a href="movie-list.html?genre=' + genre + '">' + genre + '</a></td>';
+
+        // If we've reached the end, close the row
+        if (i === resultData.length - 1) {
+            rowHTML += "</tr>";
+            genreElement.append(rowHTML);
+        }
     }
 }
+
 
 function handleTitleResult() {
     console.log("handleTitleResult: populating title list");
