@@ -73,7 +73,6 @@ public class PaymentServlet extends HttpServlet {
                     salesStatement.setString(2, entry.getKey());
                     salesStatement.setInt(3, entry.getValue());
                     salesStatement.setDate(4, Date.valueOf(LocalDate.now()));
-                    System.out.println("Preparing to insert sale record - Movie ID: " + entry.getKey() + ", Copies: " + entry.getValue());
                     salesStatement.executeUpdate();
                 }
                 salesStatement.close();
