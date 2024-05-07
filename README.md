@@ -1,13 +1,13 @@
 # CS122B-Spring24-Team-XC
-This is a UCI CS122B Project 2 made by **Spring 2024 Team XC** (Jun Xia & Shuyi Chen)
+This is a UCI CS122B Project 3 made by **Spring 2024 Team XC** (Jun Xia & Shuyi Chen)
 
 ---
 ## Video Demo Link
 ****
-https://youtu.be/ERg-ZoXi4UM
+
 ## Application URL
 ****
-http://54.67.81.180:8080/cs122b-spring24-team-xc-project2/
+
 ## Substring Matching Design
 ****
 In order to search title, director, or stars:
@@ -21,6 +21,17 @@ If title is "term", director is "jack", and star is "tom":
 WHERE title LIKE %term% AND director LIKE %jack% AND star LIKE %tom%
 ```
 
+## Prepared Statement
+****
+We use prepared statement to prevent SQL injection. The prepared statement is used in:
+- [CartServlet.java](src/CartServlet.java)
+- [ConfirmationServlet.java](src/ConfirmationServlet.java)
+- [LoginServlet.java](src/LoginServlet.java)
+- [MainServlet.java](src/MainServlet.java)
+- [MovieListServlet.java](src/MovieListServlet.java)
+- [PaymentServlet.java](src/PaymentServlet.java)
+- [SingleMovieServlet.java](src/SingleMovieServlet.java)
+- [SingleStarServlet.java](src/SingleStarServlet.java)
 ## Contribution
 ****
 - JackyZzZz (Jun Xia)
@@ -36,6 +47,10 @@ WHERE title LIKE %term% AND director LIKE %jack% AND star LIKE %tom%
 - Extend movie List Page
 - Extend single pages
 - Jump functionality
+- Use PreparedStatement
+- Use Encrypted Password
+- Importing large XML data files into the Fabflix database
+- Domain Registration
 ```
 
 - shuyic9 (Shuyi Chen)
@@ -51,4 +66,7 @@ WHERE title LIKE %term% AND director LIKE %jack% AND star LIKE %tom%
 - Beautify shopping cart
 - Implement payment page
 - Beautify payment page
+- Adding reCAPTCHA
+- Adding HTTPS
+- Implementing a Dashboard using Stored Procedure
 ```
