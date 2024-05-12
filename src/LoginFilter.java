@@ -8,25 +8,23 @@ import java.util.Set;
 
 @WebFilter(filterName = "LoginFilter", urlPatterns = "/*")
 public class LoginFilter implements Filter {
-    // Store allowed URIs in a HashSet for efficient lookup
     private final Set<String> allowedURIs = new HashSet<>();
 
     @Override
     public void init(FilterConfig fConfig) {
-        // Retrieve the context path to handle application URL prefixes correctly
         String contextPath = fConfig.getServletContext().getContextPath();
 
-        // Add all allowed URIs to the set, including the context path
+        // Paths that are accessible without authentication
         allowedURIs.add(contextPath + "/login.html");
         allowedURIs.add(contextPath + "/login.js");
         allowedURIs.add(contextPath + "/login.css");
         allowedURIs.add(contextPath + "/api/login");
         allowedURIs.add("logo.png");
-        allowedURIs.add(contextPath + "/_dashboard.html");
-        allowedURIs.add(contextPath + "/_dashboard.js");
-        allowedURIs.add(contextPath + "/_dashboard.css");
         allowedURIs.add(contextPath + "/api/_dashboard");
-        allowedURIs.add(contextPath + "/fablix/");
+        allowedURIs.add(contextPath + "/dashboard");
+        allowedURIs.add(contextPath + "/_dashboard.html");
+        allowedURIs.add(contextPath + "/api/_dashboard");
+
     }
 
     @Override
@@ -35,12 +33,14 @@ public class LoginFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-        // Get the request URI and convert to lowercase
         String requestURI = httpRequest.getRequestURI().toLowerCase();
 
-        // Log for debugging purposes
-        System.out.println("LoginFilter: Request URI: " + requestURI);
-        System.out.println("LoginFilter: Full URL: " + httpRequest.getRequestURL());
+        // Check for direct access to the logical URI
+        if (requestURI.endsWith("/fablix/dashboard")) {
+            // Redirect directly to the _dashboard.html page
+            httpResponse.sendRedirect(httpRequest.getContextPath() + "/_dashboard.html");
+            return;
+        }
 
         // If the request is allowed without logging in, continue processing
         if (isUrlAllowedWithoutLogin(requestURI)) {
@@ -48,9 +48,8 @@ public class LoginFilter implements Filter {
             return;
         }
 
-        // Check if user is logged in by verifying session attribute
+        // Default action for non-authenticated users trying to access other resources
         if (httpRequest.getSession().getAttribute("user") == null) {
-            // Redirect to login page if user is not logged in
             httpResponse.sendRedirect(httpRequest.getContextPath() + "/login.html");
         } else {
             // If user is logged in, continue processing
@@ -58,18 +57,12 @@ public class LoginFilter implements Filter {
         }
     }
 
-    /**
-     * Check if the given request URI is allowed without logging in.
-     *
-     * @param requestURI The request URI to check
-     * @return True if the URI is allowed, false otherwise
-     */
     private boolean isUrlAllowedWithoutLogin(String requestURI) {
         return allowedURIs.stream().anyMatch(requestURI::endsWith);
     }
 
     @Override
     public void destroy() {
-        // Cleanup code if needed (currently none)
+        // Cleanup code if needed
     }
 }
