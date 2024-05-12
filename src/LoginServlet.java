@@ -30,8 +30,19 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String email = request.getParameter("username");
         String password = request.getParameter("password");
-
+        String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
         JsonObject responseJsonObject = new JsonObject();
+
+        try {
+            RecaptchaVerifyUtils.verify(gRecaptchaResponse);
+        } catch (Exception e) {
+            responseJsonObject.addProperty("status", "fail");
+            responseJsonObject.addProperty("message", "reCAPTCHA verification failed: " + e.getMessage());
+            response.setContentType("application/json");
+            response.getWriter().write(responseJsonObject.toString());
+            return;
+        }
+
         try (Connection conn = dataSource.getConnection()) {
             String userQuery = "SELECT id, firstName, lastName, password FROM customers WHERE email = ?";
             PreparedStatement userStatement = conn.prepareStatement(userQuery);
