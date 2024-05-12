@@ -21,22 +21,22 @@ public class LoginFilter implements Filter {
      */
     public void init(FilterConfig fConfig) {
         // URIs that can be accessed without needing to be logged in
-        allowedURIs.add("/login.html");
-        allowedURIs.add("/login.js");
-        allowedURIs.add("/api/login");
-        allowedURIs.add("/login.css");
+        allowedURIs.add("login.html");
+        allowedURIs.add("login.js");
+        allowedURIs.add("api/login");
+        allowedURIs.add("login.css");
         allowedURIs.add("logo.png");
-        allowedURIs.add("/api/_dashboard");
-        allowedURIs.add("/_dashboard.html");
-        allowedURIs.add("/_dashboard.js");
-        allowedURIs.add("/_dashboard");
+        allowedURIs.add("api/_dashboard");
+        allowedURIs.add("_dashboard.html");
+        allowedURIs.add("_dashboard.js");
+        allowedURIs.add("_dashboard");
 
         // URIs specifically used for dashboard access
         dashboardURIs.add("/_dashboard");
 
         // URIs that are not allowed for non-admin users
-        notAllowedDashboardURIs.add("/dashboard.html");
-        notAllowedDashboardURIs.add("/dashboard");
+        notAllowedDashboardURIs.add("dashboard.html");
+        notAllowedDashboardURIs.add("dashboard");
     }
 
     /**
