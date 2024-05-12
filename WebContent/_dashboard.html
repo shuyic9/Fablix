@@ -1,10 +1,42 @@
+<!-- _dashboard.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Employee Dashboard Login</title>
+    <link rel="stylesheet" type="text/css" href="login.css">
+    <script src='https://www.google.com/recaptcha/api.js' type="text/javascript"></script>
 </head>
 <body>
+<div class="login-container">
+    <div class="login-header">
+        <img src="images/logo.png" alt="Logo" class="logo">
+        <h2>Login to Employee Dashboard</h2>
+    </div>
+    <form id="login_dashboard_form" method="post" action="#">
+        <label><b>Email</b></label>
+        <label>
+            <input name="username" placeholder="Enter Email" type="text">
+        </label>
+        <br>
+        <label><b>Password</b></label>
+        <label>
+            <input name="password" placeholder="Enter Password" type="password">
+        </label>
+        <br>
+        <div class="g-recaptcha" data-sitekey="6LdiOdkpAAAAANK4neF1mcppMm7qDt_WGoJuwAOC"></div>
+        <input type="submit" value="Login">
+        <div id="login_error_message"></div>
+    </form>
+    <div class="copyright">
+        © 2024 <a href="https://jackyzzzz.github.io/" target="_blank">Jun Xia</a> & <a href="https://www.linkedin.com/in/shuyichen9/" target="_blank">Shuyi Chen</a> | All rights reserved.
+    </div>
+</div>
+
+<!-- include jQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!-- include your custom JS file -->
+<script src="./_dashboard.js"></script>
 
 </body>
 </html>

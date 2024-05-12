@@ -96,9 +96,3 @@ input[type="submit"]:hover {
     font-size: 12px;
     padding: 10px 0;
 }
-
-.g-recaptcha {
-    display: flex;
-    justify-content: center;
-    margin: 10px auto;
-}
