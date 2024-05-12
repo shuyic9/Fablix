@@ -25,6 +25,6 @@
     </security-constraint>
     <error-page>
         <error-code>404</error-code>
-        <location>/login.html</location>
+        <location>/main.html</location>
     </error-page>
 </web-app>
