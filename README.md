@@ -32,6 +32,12 @@ We use prepared statement to prevent SQL injection. The prepared statement is us
 - [PaymentServlet.java](src/PaymentServlet.java)
 - [SingleMovieServlet.java](src/SingleMovieServlet.java)
 - [SingleStarServlet.java](src/SingleStarServlet.java)
+
+## Two Parsing Time Optimization Strategies
+****
+1. We load the original data from database to check if the new data is already exist, which reduces the number of queries.
+2. We used the ```LOAD DATA LOCAL INFILE```  feature to load everything we need to add to the database. After creating the csv files, we only need to use the ```LOAD DATA LOCAL INFILE``` feature to load the data at once, which greatly improves the parsing time.
+
 ## Contribution
 ****
 - JackyZzZz (Jun Xia)
