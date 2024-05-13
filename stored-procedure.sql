@@ -1,62 +1,63 @@
 DELIMITER $$
 
 CREATE PROCEDURE `add_movie`(
-    IN p_title VARCHAR(100),        -- Parameter for movie title
-    IN p_year INT,                  -- Parameter for movie year (can be NULL)
-    IN p_director VARCHAR(100),     -- Parameter for movie director
-    IN p_star_name VARCHAR(100),    -- Parameter for star name
-    IN p_star_birth_year INT,       -- Parameter for star birth year (can be NULL)
-    IN p_genre_name VARCHAR(32)     -- Parameter for genre name
+    IN p_title VARCHAR(100),
+    IN p_year INT,
+    IN p_director VARCHAR(100),
+    IN p_star_name VARCHAR(100),
+    IN p_star_birth_year INT,
+    IN p_genre_name VARCHAR(32)
 )
 BEGIN
-    DECLARE v_movie_id VARCHAR(10);    -- Variable for new movie ID
-    DECLARE v_star_id VARCHAR(10);     -- Variable for new star ID
-    DECLARE v_genre_id INT;            -- Variable for genre ID
-    DECLARE v_movie_exists INT;        -- Variable to check if movie exists
+    DECLARE v_movie_id VARCHAR(10);
+    DECLARE v_star_id VARCHAR(10);
+    DECLARE v_genre_id INT;
+    DECLARE v_movie_exists INT;
 
-    -- Check if the movie already exists
+    -- Check if the movie with the same title, year, and director already exists
     SELECT COUNT(*) INTO v_movie_exists
     FROM movies
-    WHERE title = p_title
-      AND (year = p_year OR (year IS NULL AND p_year IS NULL))
-      AND director = p_director;
+    WHERE title = p_title AND year = p_year AND director = p_director;
 
     IF v_movie_exists = 0 THEN
-        -- Generate new movie ID
+        -- Generate new movie ID, ensuring it's unique
         SET v_movie_id = (SELECT CONCAT('tt', LPAD(COALESCE(MAX(CAST(SUBSTRING(id, 3) AS UNSIGNED)) + 1, 1), 7, '0')) FROM movies);
+
         -- Insert the movie
-        INSERT INTO movies (id, title, year, director)
-        VALUES (v_movie_id, p_title, p_year, p_director);
+        INSERT INTO movies (id, title, year, director) VALUES (v_movie_id, p_title, p_year, p_director);
 
-        -- Generate new star ID
-        SET v_star_id = (select concat( 'nm',  LPAD((convert((SELECT SUBSTRING_INDEX((select max(id) from stars),'m',-1)), unsigned ) + 1), 7 ,0)));
-        -- Insert new star
-        INSERT INTO stars (id, name, birthYear)
-        VALUES (v_star_id, p_star_name, p_star_birth_year);
+        -- Check if the star exists
+        SELECT id INTO v_star_id FROM stars WHERE name = p_star_name LIMIT 1;
 
-        -- Link star to the movie
-        INSERT INTO stars_in_movies (starId, movieId)
-        VALUES (v_star_id, v_movie_id);
-
-        -- Handle genre
-        SELECT id INTO v_genre_id
-        FROM genres
-        WHERE name = p_genre_name;
-
-        IF v_genre_id IS NULL THEN
-            -- Insert new genre
-            INSERT INTO genres (name)
-            VALUES (p_genre_name);
-            SET v_genre_id = LAST_INSERT_ID();
+        IF v_star_id IS NULL THEN
+            -- Generate new star ID
+            SET v_star_id = (SELECT CONCAT('nm', LPAD(COALESCE(MAX(CAST(SUBSTRING(id, 3) AS UNSIGNED)) + 1, 1), 7, '0')) FROM stars);
+            -- Insert new star if not exists
+            IF p_star_birth_year IS NULL THEN
+                INSERT INTO stars (id, name) VALUES (v_star_id, p_star_name);
+            ELSE
+                INSERT INTO stars (id, name, birthYear) VALUES (v_star_id, p_star_name, p_star_birth_year);
+            END IF;
         END IF;
 
-        -- Link genre to the movie
-        INSERT INTO genres_in_movies (genreId, movieId)
-        VALUES (v_genre_id, v_movie_id);
+        -- Insert star-movie relation
+        INSERT INTO stars_in_movies (starId, movieId) VALUES (v_star_id, v_movie_id);
 
-        SELECT 'Movie added successfully with IDs - Movie: ', v_movie_id, ' Star: ', v_star_id, ' Genre: ', v_genre_id;
+        -- Check if the genre exists
+        SELECT id INTO v_genre_id FROM genres WHERE name = p_genre_name LIMIT 1;
+
+        IF v_genre_id IS NULL THEN
+            -- Insert new genre if not exists
+            INSERT INTO genres (name) VALUES (p_genre_name);
+            SELECT LAST_INSERT_ID() INTO v_genre_id;
+        END IF;
+
+        -- Insert genre-movie relation
+        INSERT INTO genres_in_movies (genreId, movieId) VALUES (v_genre_id, v_movie_id);
+
+        SELECT CONCAT('Movie added successfully with IDs - Movie: ', v_movie_id, ', Star: ', v_star_id, ', Genre: ', v_genre_id) AS message;
     ELSE
-        SELECT 'Movie already exists.';
+        SELECT 'Movie already exists.' AS message;
     END IF;
 END$$
 

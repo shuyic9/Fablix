@@ -44,12 +44,27 @@ public class LoginFilter implements Filter {
             } else {
                 httpResponse.sendRedirect("login.html");}
         } else {
-            chain.doFilter(request, response);
+            // Check if user has access to restricted pages
+            if (this.isRestrictedPage(httpRequest.getRequestURI())) {
+                // Assuming user roles are stored in session and checked here
+                Boolean isAdmin = (Boolean) httpRequest.getSession().getAttribute("admin");
+                if (Boolean.TRUE.equals(isAdmin)) {
+                    chain.doFilter(request, response);
+                } else {
+                    httpResponse.sendRedirect("_dashboard.html");
+                }
+            } else {
+                chain.doFilter(request, response);
+            }
         }
     }
 
     private boolean isUrlAllowedWithoutLogin(String requestURI) {
         return allowedURIs.stream().anyMatch(uri -> requestURI.toLowerCase().endsWith(uri));
+    }
+
+    private boolean isRestrictedPage(String requestURI) {
+        return requestURI.contains("dashboard.html") || requestURI.contains("addStar.html") || requestURI.contains("addMovie.html");
     }
 
     @Override
