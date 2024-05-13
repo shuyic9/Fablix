@@ -23,13 +23,13 @@ BEGIN
 
     IF v_movie_exists = 0 THEN
         -- Generate new movie ID
-        SET v_movie_id = (SELECT CONCAT('tt', LPAD(COALESCE(MAX(SUBSTRING(id, 3)) + 1, 1), 8, '0')) FROM movies);
+        SET v_movie_id = (SELECT CONCAT('tt', LPAD(COALESCE(MAX(CAST(SUBSTRING(id, 3) AS UNSIGNED)) + 1, 1), 7, '0')) FROM movies);
         -- Insert the movie
         INSERT INTO movies (id, title, year, director)
         VALUES (v_movie_id, p_title, p_year, p_director);
 
         -- Generate new star ID
-        SET v_star_id = (SELECT CONCAT('nm', LPAD(COALESCE(MAX(SUBSTRING(id, 3)) + 1, 1), 8, '0')) FROM stars);
+        SET v_star_id = (select concat( 'nm',  LPAD((convert((SELECT SUBSTRING_INDEX((select max(id) from stars),'m',-1)), unsigned ) + 1), 7 ,0)));
         -- Insert new star
         INSERT INTO stars (id, name, birthYear)
         VALUES (v_star_id, p_star_name, p_star_birth_year);

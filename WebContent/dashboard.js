@@ -42,7 +42,7 @@ $(document).ready(function() {
 
     // Button actions
     $('#addMovieBtn').click(function() {
-        window.location.href = 'addmovie.html';
+        window.location.href = 'addMovie.html';
     });
 
     $('#addStarBtn').click(function() {
