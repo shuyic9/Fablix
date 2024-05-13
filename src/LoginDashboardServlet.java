@@ -13,13 +13,14 @@ import javax.naming.NamingException;
 
 import org.jasypt.util.password.StrongPasswordEncryptor;
 
-@WebServlet(name = "LoginServlet", urlPatterns = "/api/login")
-public class LoginServlet extends HttpServlet {
+@WebServlet(name = "LoginDashboardServlet", urlPatterns = "/api/_dashboard")
+public class LoginDashboardServlet extends HttpServlet {
     private DataSource dataSource;
 
     @Override
     public void init() {
         try {
+            // Adjust the database lookup string to point to your employee database
             InitialContext initialContext = new InitialContext();
             dataSource = (DataSource) initialContext.lookup("java:comp/env/jdbc/moviedb");
         } catch (NamingException e) {
@@ -27,13 +28,15 @@ public class LoginServlet extends HttpServlet {
         }
     }
 
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String email = request.getParameter("username");
+        String email = request.getParameter("username"); // Retrieve email (username) from the request
         String password = request.getParameter("password");
         String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
         JsonObject responseJsonObject = new JsonObject();
 
         try {
+            // This method should verify the reCAPTCHA response
             RecaptchaVerifyUtils.verify(gRecaptchaResponse);
         } catch (Exception e) {
             responseJsonObject.addProperty("status", "fail");
@@ -44,7 +47,8 @@ public class LoginServlet extends HttpServlet {
         }
 
         try (Connection conn = dataSource.getConnection()) {
-            String userQuery = "SELECT id, firstName, lastName, password FROM customers WHERE email = ?";
+            // Use SQL to fetch email and password only
+            String userQuery = "SELECT email, password FROM employees WHERE email = ?";
             PreparedStatement userStatement = conn.prepareStatement(userQuery);
             userStatement.setString(1, email);
             ResultSet userRs = userStatement.executeQuery();
@@ -52,24 +56,24 @@ public class LoginServlet extends HttpServlet {
             if (userRs.next()) {
                 String correctPassword = userRs.getString("password");
 
+                // Verify the provided password using a secure method
                 if (new StrongPasswordEncryptor().checkPassword(password, correctPassword)) {
-                    // Password is correct
-                    int userId = userRs.getInt("id");
-                    String userFullName = userRs.getString("firstName") + " " + userRs.getString("lastName");
-                    request.getSession().setAttribute("userId", userId); // Store user ID in session
-                    request.getSession().setAttribute("user", userFullName); // Store user's name in session
+                    // Password matches, set session attributes
+                    request.getSession().setAttribute("userEmail", email); // Store the employee's email in the session
                     responseJsonObject.addProperty("status", "success");
                     responseJsonObject.addProperty("message", "Login successful.");
                 } else {
-                    // Password is incorrect
+                    // Incorrect password
                     responseJsonObject.addProperty("status", "fail");
                     responseJsonObject.addProperty("message", "Incorrect password.");
                 }
             } else {
-                // User does not exist
+                // Email not found in the database
                 responseJsonObject.addProperty("status", "fail");
-                responseJsonObject.addProperty("message", "Username does not exist.");
+                responseJsonObject.addProperty("message", "Email does not exist.");
             }
+
+            // Close resources
             userRs.close();
             userStatement.close();
         } catch (Exception e) {

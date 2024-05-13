@@ -18,6 +18,11 @@ public class LoginFilter implements Filter {
         allowedURIs.add("login.css");
         allowedURIs.add("api/login");
         allowedURIs.add("logo.png");
+        allowedURIs.add("_dashboard.html");
+        allowedURIs.add("_dashboard.js");
+        allowedURIs.add("_dashboard.css");
+        allowedURIs.add("api/_dashboard");
+        allowedURIs.add("fablix/");
     }
 
     @Override

@@ -23,8 +23,8 @@
             <transport-guarantee>CONFIDENTIAL</transport-guarantee>
         </user-data-constraint>
     </security-constraint>
-    <error-page>
+    <!-- <error-page>
         <error-code>404</error-code>
-        <location>/main.html</location>
-    </error-page>
+        <location>/login.html</location>
+    </error-page> -->
 </web-app>
