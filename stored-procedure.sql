@@ -25,6 +25,7 @@ BEGIN
 
         -- Insert the movie
         INSERT INTO movies (id, title, year, director) VALUES (v_movie_id, p_title, p_year, p_director);
+        INSERT INTO ratings (movieId, rating, numVotes) VALUES (v_movie_id, 0.0, 0);
 
         -- Check if the star exists
         SELECT id INTO v_star_id FROM stars WHERE name = p_star_name LIMIT 1;
