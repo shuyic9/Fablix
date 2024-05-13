@@ -18,14 +18,18 @@ public class AddMovieServlet extends HttpServlet {
 
     private DataSource dataSource;
 
+    @Override
     public void init(ServletConfig config) {
         try {
             dataSource = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/moviedb");
+            System.out.println("DataSource lookup successful.");
         } catch (NamingException e) {
             e.printStackTrace();
+            System.out.println("DataSource lookup failed: " + e.getMessage());
         }
     }
 
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json");
         String title = request.getParameter("title");
@@ -50,28 +54,42 @@ public class AddMovieServlet extends HttpServlet {
                 starName == null || starName.trim().isEmpty() ||
                 genreName == null || genreName.trim().isEmpty()) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing required parameters.");
+            System.out.println("Missing required parameters.");
             return;
         }
 
         try (Connection conn = dataSource.getConnection()) {
+            System.out.println("Database connection established.");
+
             String procedureCall = "{CALL add_movie(?, ?, ?, ?, ?, ?)}";
             try (CallableStatement stmt = conn.prepareCall(procedureCall)) {
+                System.out.println("Preparing stored procedure call.");
+
                 stmt.setString(1, title);
                 if (year != null && !year.trim().isEmpty()) {
                     stmt.setInt(2, Integer.parseInt(year));
+                    System.out.println("Set year: " + year);
                 } else {
                     stmt.setNull(2, java.sql.Types.INTEGER);
+                    System.out.println("Year is null or empty.");
                 }
                 stmt.setString(3, director);
+                System.out.println("Set director: " + director);
                 stmt.setString(4, starName);
+                System.out.println("Set starName: " + starName);
                 if (starBirthYear != null && !starBirthYear.trim().isEmpty()) {
                     stmt.setInt(5, Integer.parseInt(starBirthYear));
+                    System.out.println("Set starBirthYear: " + starBirthYear);
                 } else {
                     stmt.setNull(5, java.sql.Types.INTEGER);
+                    System.out.println("StarBirthYear is null or empty.");
                 }
                 stmt.setString(6, genreName);
+                System.out.println("Set genreName: " + genreName);
 
                 boolean hasResultSet = stmt.execute();
+                System.out.println("Stored procedure executed. Has result set: " + hasResultSet);
+
                 JsonObject responseJsonObject = new JsonObject();
 
                 if (hasResultSet) {
@@ -80,14 +98,17 @@ public class AddMovieServlet extends HttpServlet {
                             String message = rs.getString(1);
                             responseJsonObject.addProperty("status", "success");
                             responseJsonObject.addProperty("message", message);
+                            System.out.println("Stored procedure success message: " + message);
                         } else {
                             responseJsonObject.addProperty("status", "fail");
                             responseJsonObject.addProperty("message", "Failed to add the movie.");
+                            System.out.println("Failed to add the movie (no result set).");
                         }
                     }
                 } else {
                     responseJsonObject.addProperty("status", "fail");
                     responseJsonObject.addProperty("message", "Failed to add the movie.");
+                    System.out.println("Failed to add the movie (no result set).");
                 }
                 out.write(responseJsonObject.toString());
                 response.setStatus(HttpServletResponse.SC_OK);
@@ -97,6 +118,7 @@ public class AddMovieServlet extends HttpServlet {
             jsonObject.addProperty("errorMessage", e.getMessage());
             out.write(jsonObject.toString());
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            System.out.println("SQL Exception: " + e.getMessage());
         } finally {
             out.close();
         }

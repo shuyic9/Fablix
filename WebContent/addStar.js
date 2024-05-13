@@ -7,14 +7,20 @@ document.getElementById('addStarForm').addEventListener('submit', function(event
     })
         .then(response => response.json())
         .then(data => {
+            const resultDiv = document.getElementById('result');
             if (data.status === "success") {
-                alert("Star added successfully.");
+                resultDiv.textContent = "Star added successfully with ID: " + data.starId;
+                resultDiv.classList.add('text-success');
+                document.getElementById('addStarForm').reset();
             } else {
-                alert("Failed to add star: " + data.message);
+                resultDiv.textContent = "Failed to add star: " + data.message;
+                resultDiv.classList.add('text-danger');
             }
         })
         .catch(error => {
             console.error('Error adding star:', error);
-            alert('Failed to add star. Please check the console for more information.');
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = 'Failed to add star. Please check the console for more information.';
+            resultDiv.classList.add('text-danger');
         });
 });

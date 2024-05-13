@@ -44,9 +44,7 @@ public class LoginFilter implements Filter {
             } else {
                 httpResponse.sendRedirect("login.html");}
         } else {
-            // Check if user has access to restricted pages
             if (this.isRestrictedPage(httpRequest.getRequestURI())) {
-                // Assuming user roles are stored in session and checked here
                 Boolean isAdmin = (Boolean) httpRequest.getSession().getAttribute("admin");
                 if (Boolean.TRUE.equals(isAdmin)) {
                     chain.doFilter(request, response);

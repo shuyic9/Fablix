@@ -1,5 +1,5 @@
 DELIMITER $$
-
+DROP PROCEDURE IF EXISTS add_movie;
 CREATE PROCEDURE `add_movie`(
     IN p_title VARCHAR(100),
     IN p_year INT,
@@ -9,8 +9,8 @@ CREATE PROCEDURE `add_movie`(
     IN p_genre_name VARCHAR(32)
 )
 BEGIN
-    DECLARE v_movie_id VARCHAR(10);
-    DECLARE v_star_id VARCHAR(10);
+    DECLARE v_movie_id VARCHAR(9);
+    DECLARE v_star_id VARCHAR(9);
     DECLARE v_genre_id INT;
     DECLARE v_movie_exists INT;
 

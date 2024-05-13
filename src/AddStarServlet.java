@@ -30,7 +30,7 @@ public class AddStarServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json");
         String starName = request.getParameter("name");
-        String birthYear = request.getParameter("birthYear");  // birthYear can be null
+        String birthYear = request.getParameter("birthYear");
         PrintWriter out = response.getWriter();
 
         if (starName == null || starName.trim().isEmpty()) {
@@ -65,7 +65,7 @@ public class AddStarServlet extends HttpServlet {
                 JsonObject responseJsonObject = new JsonObject();
                 if (rowsAffected > 0) {
                     responseJsonObject.addProperty("status", "success");
-                    responseJsonObject.addProperty("message", "Star added successfully.");
+                    responseJsonObject.addProperty("message", "Star added successfully with ID: " + newStarId);
                     responseJsonObject.addProperty("starId", newStarId);
                 } else {
                     responseJsonObject.addProperty("status", "fail");
