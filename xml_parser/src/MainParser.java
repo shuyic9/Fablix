@@ -15,7 +15,7 @@ class MainParser extends DefaultHandler {
 
     private Connection conn;
     private PreparedStatement stmt;
-    private List<Movie> movies;
+    private List<Movie> movies; // All the movies
     private Map<String, Integer> genreMap;
     private Movie currentMovie = null;
     private String currentDirector = null;
@@ -29,6 +29,7 @@ class MainParser extends DefaultHandler {
 
     private FileWriter genreWriter;
     private FileWriter genreMovieWriter;
+    private FileWriter ratingsWriter;
     private static Set<String> uniqueGenres;
 
     private static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
@@ -43,6 +44,7 @@ class MainParser extends DefaultHandler {
         fileWriter = new FileWriter("movies.csv", true);
         genreWriter = new FileWriter("genres.csv", false);
         genreMovieWriter = new FileWriter("genres_in_movies.csv", true);
+        ratingsWriter = new FileWriter("ratings.csv", true);
         errorWriter = new PrintWriter("errors.log", "UTF-8");
 
         badMovies = new ArrayList<>();
@@ -156,6 +158,15 @@ class MainParser extends DefaultHandler {
 
             loadGenres_In_Movies();
 
+            System.out.println("Writing ratings.csv");
+            writeRatingsInMovies();
+            System.out.println("Finished writing ratings.csv");
+
+            ratingsWriter.flush();
+            ratingsWriter.close();
+
+            loadRatingsIntoDatabase();
+
             errorWriter.println("Total number of Bad movies: " + badMovies.size());
             for (Movie movie : badMovies) {
                 errorWriter.println(movie.toString());
@@ -186,6 +197,16 @@ class MainParser extends DefaultHandler {
             }
         } catch (IOException e) {
             System.err.println("Error writing genres in movies: " + e.getMessage());
+        }
+    }
+
+    private void writeRatingsInMovies() {
+        try {
+            for (Movie movie : movies) {
+                ratingsWriter.append(movie.getId() + "," + 0.0 + "," + 0 + "\n");
+            }
+        } catch (IOException e) {
+            System.err.println("Error writing ratings.csv: " + e.getMessage());
         }
     }
 
@@ -266,6 +287,40 @@ class MainParser extends DefaultHandler {
 
             System.out.println("Loading data into genres_in_movies table...");
             stmt.execute(loadGenresInMovies);
+
+            System.out.println("Data loaded successfully.");
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null) stmt.close();
+                if (conn != null) conn.close();
+            } catch (Exception se) {
+                se.printStackTrace();
+            }
+        }
+    }
+
+    public void loadRatingsIntoDatabase() {
+        Connection conn = null;
+        Statement stmt = null;
+        try {
+            // Get the current working directory
+            String currentDir = System.getProperty("user.dir");
+
+            String ratingsPath = currentDir + "/ratings.csv";
+
+            Class.forName(JDBC_DRIVER);
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            stmt = conn.createStatement();
+
+            String loadRatings = "LOAD DATA LOCAL INFILE '" + ratingsPath.replace("\\", "\\\\") + "' INTO TABLE ratings " +
+                    "FIELDS TERMINATED BY ',' LINES TERMINATED BY '\\n' " +
+                    "(movieId, rating, numVotes);";
+
+
+            System.out.println("Loading data into ratings table...");
+            stmt.execute(loadRatings);
 
             System.out.println("Data loaded successfully.");
         } catch (Exception e) {
