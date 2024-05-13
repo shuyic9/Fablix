@@ -14,6 +14,7 @@ function handleLoginResult(resultDataJson) {
     } else {
         // If login fails, display an alert with the error message
         alert(resultDataJson["message"]);
+        grecaptcha.reset();
     }
 }
 
@@ -27,12 +28,16 @@ function submitLoginForm(formSubmitEvent) {
 
     let email = $("#login_form input[name='username']").val().trim();
     let password = $("#login_form input[name='password']").val().trim();
+    let recaptchaResponse = $("#g-recaptcha-response").val();
 
     if (email === "") {
         alert("Please fill out the email field.");
         return;
     } else if (password === "") {
         alert("Please fill out the password field.");
+        return;
+    }else if (recaptchaResponse === "") {
+        alert("Please verify that you are not a robot.");
         return;
     }
 

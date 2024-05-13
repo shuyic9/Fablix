@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Movie</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="payment.css">
 </head>
 <body>
 <h1>Add a New Movie</h1>
@@ -28,41 +30,8 @@
 
     <button type="submit">Submit</button>
 </form>
-<div id="result"></div>
+<div id="messages" class="message-container"></div> <!-- Message container -->
 
-<script>
-    document.getElementById('addMovieForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        const formData = new FormData(this);
-
-        // Debugging form data before sending
-        for (let pair of formData.entries()) {
-            console.log(pair[0]+ ', ' + pair[1]);
-        }
-
-        fetch('api/add_movie', {
-            method: 'POST',
-            body: new URLSearchParams(formData)
-        })
-            .then(response => response.json())
-            .then(data => {
-                const resultDiv = document.getElementById('result');
-                if (data.status === 'success') {
-                    resultDiv.textContent = 'Success: ' + data.message;
-                    resultDiv.classList.add('text-success');
-                    document.getElementById('addMovieForm').reset();
-                } else {
-                    resultDiv.textContent = 'Error: ' + data.message || 'An error occurred.';
-                    resultDiv.classList.add('text-danger');
-                }
-            })
-            .catch(error => {
-                console.error('Error adding movie:', error);
-                const resultDiv = document.getElementById('result');
-                resultDiv.textContent = 'Failed to add movie. Please check the console for more information.';
-                resultDiv.classList.add('text-danger');
-            });
-    });
-</script>
+<script src="addMovie.js"></script>
 </body>
 </html>
