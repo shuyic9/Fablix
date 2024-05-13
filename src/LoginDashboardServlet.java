@@ -59,7 +59,7 @@ public class LoginDashboardServlet extends HttpServlet {
                 // Verify the provided password using a secure method
                 if (new StrongPasswordEncryptor().checkPassword(password, correctPassword)) {
                     // Password matches, set session attributes
-                    request.getSession().setAttribute("userEmail", email); // Store the employee's email in the session
+                    request.getSession().setAttribute("user", email); // Store the employee's email in the session
                     responseJsonObject.addProperty("status", "success");
                     responseJsonObject.addProperty("message", "Login successful.");
                 } else {
