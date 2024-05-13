@@ -3,26 +3,26 @@ import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
 
+/**
+ * Servlet Filter implementation class LoginFilter
+ */
 @WebFilter(filterName = "LoginFilter", urlPatterns = "/*")
 public class LoginFilter implements Filter {
-    private final Set<String> allowedURIs = new HashSet<>();
+    private final ArrayList<String> allowedURIs = new ArrayList<>();
 
     @Override
     public void init(FilterConfig fConfig) {
-        // Using HashSet for O(1) lookup
+        // Existing allowed URIs
         allowedURIs.add("login.html");
         allowedURIs.add("login.js");
         allowedURIs.add("login.css");
         allowedURIs.add("api/login");
         allowedURIs.add("logo.png");
-        allowedURIs.add("_dashboard.html");
-        allowedURIs.add("_dashboard.js");
-        allowedURIs.add("_dashboard.css");
         allowedURIs.add("api/_dashboard");
-        allowedURIs.add("fablix/");
+        allowedURIs.add("_dashboard.js");
+        allowedURIs.add("_dashboard.html");
     }
 
     @Override
@@ -31,30 +31,42 @@ public class LoginFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-        String requestURI = httpRequest.getRequestURI().toLowerCase();
-        System.out.println("LoginFilter: " + requestURI);
+        System.out.println("LoginFilter: " + httpRequest.getRequestURI());
 
-        if (isUrlAllowedWithoutLogin(requestURI)) {
+        if (this.isUrlAllowedWithoutLogin(httpRequest.getRequestURI())) {
             chain.doFilter(request, response);
             return;
         }
 
         if (httpRequest.getSession().getAttribute("user") == null) {
-            // Redirects to login page if no user is found in the session
-            httpResponse.sendRedirect("login.html");
+            if (httpRequest.getRequestURI().contains("_dashboard")) {
+                httpResponse.sendRedirect("_dashboard.html");
+            } else {
+                httpResponse.sendRedirect("login.html");}
         } else {
-            // User is authenticated, proceed
-            chain.doFilter(request, response);
+            if (this.isRestrictedPage(httpRequest.getRequestURI())) {
+                Boolean isAdmin = (Boolean) httpRequest.getSession().getAttribute("admin");
+                if (Boolean.TRUE.equals(isAdmin)) {
+                    chain.doFilter(request, response);
+                } else {
+                    httpResponse.sendRedirect("_dashboard.html");
+                }
+            } else {
+                chain.doFilter(request, response);
+            }
         }
     }
 
     private boolean isUrlAllowedWithoutLogin(String requestURI) {
-        // Check if request URI ends with any allowed URI
-        return allowedURIs.stream().anyMatch(requestURI::endsWith);
+        return allowedURIs.stream().anyMatch(uri -> requestURI.toLowerCase().endsWith(uri));
+    }
+
+    private boolean isRestrictedPage(String requestURI) {
+        return requestURI.contains("dashboard.html") || requestURI.contains("addStar.html") || requestURI.contains("addMovie.html");
     }
 
     @Override
     public void destroy() {
-        // Cleanup code if needed
+        // ignored.
     }
 }

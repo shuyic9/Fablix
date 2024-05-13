@@ -52,6 +52,7 @@ public class LoginDashboardServlet extends HttpServlet {
             PreparedStatement userStatement = conn.prepareStatement(userQuery);
             userStatement.setString(1, email);
             ResultSet userRs = userStatement.executeQuery();
+            boolean admin = true;
 
             if (userRs.next()) {
                 String correctPassword = userRs.getString("password");
@@ -59,7 +60,8 @@ public class LoginDashboardServlet extends HttpServlet {
                 // Verify the provided password using a secure method
                 if (new StrongPasswordEncryptor().checkPassword(password, correctPassword)) {
                     // Password matches, set session attributes
-                    request.getSession().setAttribute("userEmail", email); // Store the employee's email in the session
+                    request.getSession().setAttribute("user", email);
+                    request.getSession().setAttribute("admin", admin);
                     responseJsonObject.addProperty("status", "success");
                     responseJsonObject.addProperty("message", "Login successful.");
                 } else {
