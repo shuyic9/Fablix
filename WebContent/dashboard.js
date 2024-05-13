@@ -46,6 +46,6 @@ $(document).ready(function() {
     });
 
     $('#addStarBtn').click(function() {
-        window.location.href = 'addstar.html';
+        window.location.href = 'addStar.html';
     });
 });
