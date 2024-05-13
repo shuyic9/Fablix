@@ -285,7 +285,13 @@ class MainParser extends DefaultHandler {
         try {
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser saxParser = factory.newSAXParser();
-            saxParser.parse("C:\\Users\\86410\\Downloads\\stanford-movies\\stanford-movies\\mains243.xml", new MainParser());
+
+            String currentDir = System.getProperty("user.dir");
+
+            String stanfordPath = currentDir + "/stanford-movies";
+            String mainsPath = stanfordPath + "/mains243.xml";
+
+            saxParser.parse(mainsPath, new MainParser());
         } catch (Exception e) {
             e.printStackTrace();
         }
