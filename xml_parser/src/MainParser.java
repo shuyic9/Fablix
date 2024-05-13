@@ -108,7 +108,9 @@ class MainParser extends DefaultHandler {
                 String genresText = new String(ch, start, length).toLowerCase().trim();
                 String[] genres = genresText.split("\\s+"); // Split genre text by whitespace
                 for (String genre : genres) {
-                    currentMovie.getGenres().add(genre);
+                    if (!genre.trim().isEmpty()) {
+                        currentMovie.getGenres().add(genre);
+                    }
                 }
                 bGenre = false;
             }
@@ -125,7 +127,7 @@ class MainParser extends DefaultHandler {
                     fileWriter.append(currentMovie.toCSVFormat());
                     fileWriter.append("\n");
                     for (String genre : currentMovie.getGenres()) {
-                        if (uniqueGenres.add(genre)) { // Check and add the lowercase genre
+                        if (!genre.trim().isEmpty() && uniqueGenres.add(genre)) { // Add genre to set if it's unique
                             genreWriter.append(genre + "\n");
                         }
 //                        genreMovieWriter.append(genreMap.get(genre) + "," + currentMovie.getId() + "\n");
