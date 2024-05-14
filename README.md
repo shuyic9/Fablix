@@ -4,9 +4,11 @@ This is a UCI CS122B Project 3 made by **Spring 2024 Team XC** (Jun Xia & Shuyi 
 ---
 ## Video Demo Link
 ****
+https://youtu.be/0p8sNosDOos
 
 ## Application URL
 ****
+https://jackyxia.blog:8443/cs122b-spring24-team-xc-project3/
 
 ## Substring Matching Design
 ****
