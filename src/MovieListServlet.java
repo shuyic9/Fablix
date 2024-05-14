@@ -156,6 +156,8 @@ public class MovieListServlet extends HttpServlet {
                 statement.setInt(parameters.size() + 1, numResults);
                 statement.setInt(parameters.size() + 2, offset);
 
+                System.out.println("Executing query: " + statement.toString());
+
                 // Perform the query
                 ResultSet rs = statement.executeQuery();
 
@@ -174,8 +176,8 @@ public class MovieListServlet extends HttpServlet {
                     String movie_rating = rs.getString("rating");
 
                     // Split and limit the genres and stars to the first three
-                    String[] genreDetails = movie_genres.split(", ");
-                    String[] starDetails = allStars.split(", ");
+                    String[] genreDetails = movie_genres != null ? movie_genres.split(", ") : new String[0];
+                    String[] starDetails = allStars != null ? allStars.split(", ") : new String[0];
 
                     // Handling genres - fetch up to first three
                     ArrayList<String> topGenres = new ArrayList<>();
@@ -213,6 +215,8 @@ public class MovieListServlet extends HttpServlet {
                 response.setStatus(200);
             }
         } catch (Exception e) {
+            // Log error message
+            e.printStackTrace();
 
             // Write error message JSON object to output
             JsonObject jsonObject = new JsonObject();
