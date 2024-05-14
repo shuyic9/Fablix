@@ -35,6 +35,10 @@ We use prepared statement to prevent SQL injection. The prepared statement is us
 - [SingleMovieServlet.java](src/SingleMovieServlet.java)
 - [SingleStarServlet.java](src/SingleStarServlet.java)
 
+## Inconsistent Data Log
+****
+- [errors.log](errors.log)
+
 ## Two Parsing Time Optimization Strategies
 ****
 1. We load the original data from database to check if the new data is already exist, which reduces the number of queries.
