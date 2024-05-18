@@ -78,6 +78,8 @@
       - [PaymentServlet.java](src/PaymentServlet.java)
       - [SingleMovieServlet.java](src/SingleMovieServlet.java)
       - [SingleStarServlet.java](src/SingleStarServlet.java)
+      - [context.xml](WebContent/META-INF/context.xml)
+      - [web.xml](WebContent/WEB-INF/web.xml)
 
     - #### Explain how Connection Pooling is utilized in the Fablix code.
       - In the [context.xml](WebContent/META-INF/context.xml) file, you can define the configuration of the connection
@@ -133,8 +135,12 @@ WHERE title LIKE %term% AND director LIKE %jack% AND star LIKE %tom%
 
 ## Prepared Statement
 We use prepared statement to prevent SQL injection. The prepared statement is used in:
+- [AddMovieServlet.java](src/AddMovieServlet.java)
+- [AddStarServlet.java](src/AddStarServlet.java)
 - [CartServlet.java](src/CartServlet.java)
 - [ConfirmationServlet.java](src/ConfirmationServlet.java)
+- [DashboardServlet.java](src/DashboardServlet.java)
+- [LoginDashboardServlet.java](src/LoginDashboardServlet.java)
 - [LoginServlet.java](src/LoginServlet.java)
 - [MainServlet.java](src/MainServlet.java)
 - [MovieListServlet.java](src/MovieListServlet.java)
