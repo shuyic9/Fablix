@@ -66,8 +66,50 @@
 
 - # Connection Pooling
     - #### Include the filename/path of all code/configuration files in GitHub of using JDBC Connection Pooling.
+      - [AddMovieServlet.java](src/AddMovieServlet.java)
+      - [AddStarServlet.java](src/AddStarServlet.java)
+      - [CartServlet.java](src/CartServlet.java)
+      - [ConfirmationServlet.java](src/ConfirmationServlet.java)
+      - [DashboardServlet.java](src/DashboardServlet.java)
+      - [LoginDashboardServlet.java](src/LoginDashboardServlet.java)
+      - [LoginServlet.java](src/LoginServlet.java)
+      - [MainServlet.java](src/MainServlet.java)
+      - [MovieListServlet.java](src/MovieListServlet.java)
+      - [PaymentServlet.java](src/PaymentServlet.java)
+      - [SingleMovieServlet.java](src/SingleMovieServlet.java)
+      - [SingleStarServlet.java](src/SingleStarServlet.java)
 
-    - #### Explain how Connection Pooling is utilized in the Fabflix code.
+    - #### Explain how Connection Pooling is utilized in the Fablix code.
+      - In the [context.xml](WebContent/META-INF/context.xml) file, you can define the configuration of the connection
+        pool, specifically through this line:
+        ```
+          maxTotal="100" maxIdle="30" maxWaitMillis="10000"
+        ```
+      - In the [web.xml](WebContent/WEB-INF/web.xml) file, you can define the resource reference, specifically through these lines:
+        ```
+        <resource-ref>
+        <description>MySQL DataSource Project1</description>
+        <res-ref-name>jdbc/moviedb</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+        </resource-ref>
+        ```
+      - On top of every servlet that needs to connect to the database, define the datasource:
+        ```
+          @Override
+          public void init(ServletConfig config) {
+            try {
+              dataSource = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/moviedb");
+            } catch (NamingException e) {
+              e.printStackTrace();
+            }
+          }
+        ```
+      - Then, Use the datasource to get a connection:
+        ```
+          Connection connection = dataSource.getConnection();
+        ```
+      - This way, the connection will be reused and not closed after each query, which is more efficient than creating a new connection for each query.
 
     - #### Explain how Connection Pooling works with two backend SQL.
 
