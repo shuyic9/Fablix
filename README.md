@@ -90,10 +90,10 @@
       - In the [web.xml](WebContent/WEB-INF/web.xml) file, you can define the resource reference, specifically through these lines:
         ```
         <resource-ref>
-        <description>MySQL DataSource Project1</description>
-        <res-ref-name>jdbc/moviedb</res-ref-name>
-        <res-type>javax.sql.DataSource</res-type>
-        <res-auth>Container</res-auth>
+            <description>MySQL DataSource Project1</description>
+            <res-ref-name>jdbc/moviedb</res-ref-name>
+            <res-type>javax.sql.DataSource</res-type>
+            <res-auth>Container</res-auth>
         </resource-ref>
         ```
       - On top of every servlet that needs to connect to the database, define the datasource:
