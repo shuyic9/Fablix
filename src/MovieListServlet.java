@@ -34,6 +34,16 @@ public class MovieListServlet extends HttpServlet {
         }
     }
 
+    private int distanceThreshold(String query) {
+        if (query.length() <= 4) {
+            return 1;
+        } else if (query.length() <= 8) {
+            return 2;
+        } else {
+            return 3;
+        }
+    }
+
     /**
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
@@ -77,8 +87,11 @@ public class MovieListServlet extends HttpServlet {
             ArrayList <Object> parameters = new ArrayList<>();
 
             if (name != null && !name.isEmpty()) {
-                conditions.add("m.title LIKE ?");
+                int nameThreshold = distanceThreshold(name);
+                conditions.add("m.title LIKE ? OR edth(m.title, ?, ?)");
                 parameters.add("%" + name + "%");
+                parameters.add(name);
+                parameters.add(nameThreshold);
             }
 
             if (year != null && !year.isEmpty()) {
@@ -87,18 +100,27 @@ public class MovieListServlet extends HttpServlet {
             }
 
             if (director != null && !director.isEmpty()) {
-                conditions.add("m.director LIKE ?");
+                int directorThreshold = distanceThreshold(director);
+                conditions.add("m.director LIKE ? OR edth(m.director, ?, ?)");
                 parameters.add("%" + director + "%");
+                parameters.add(director);
+                parameters.add(directorThreshold);
             }
 
             if (genre != null && !genre.isEmpty()) {
-                conditions.add("EXISTS (SELECT 1 FROM genres_in_movies gm JOIN genres g ON gm.genreId = g.id WHERE gm.movieId = m.id AND g.name LIKE ?)");
+                int genreThreshold = distanceThreshold(genre);
+                conditions.add("EXISTS (SELECT 1 FROM genres_in_movies gm JOIN genres g ON gm.genreId = g.id WHERE gm.movieId = m.id AND (g.name LIKE ? OR edth(g.name, ?, ?)))");
                 parameters.add("%" + genre + "%");
+                parameters.add(genre);
+                parameters.add(genreThreshold);
             }
 
             if (star != null && !star.isEmpty()) {
-                conditions.add("EXISTS (SELECT 1 FROM stars_in_movies sm JOIN stars s ON sm.starId = s.id WHERE sm.movieId = m.id AND s.name LIKE ?)");
+                int starThreshold = distanceThreshold(star);
+                conditions.add("EXISTS (SELECT 1 FROM stars_in_movies sm JOIN stars s ON sm.starId = s.id WHERE sm.movieId = m.id AND (s.name LIKE ? OR edth(s.name, ?, ?)))");
                 parameters.add("%" + star + "%");
+                parameters.add(star);
+                parameters.add(starThreshold);
             }
 
             if (firstChar != null && !firstChar.isEmpty()) {
