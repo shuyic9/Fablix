@@ -101,7 +101,6 @@ We use prepared statement to prevent SQL injection. The prepared statement is us
 - [SingleStarServlet.java](src/SingleStarServlet.java)
 
 ## Inconsistent Data Log
-****
 - [errors.log](errors.log)
 
 ## Two Parsing Time Optimization Strategies
