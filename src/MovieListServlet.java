@@ -88,8 +88,13 @@ public class MovieListServlet extends HttpServlet {
 
             if (name != null && !name.isEmpty()) {
                 int nameThreshold = distanceThreshold(name);
-                conditions.add("m.title LIKE ? OR edth(m.title, ?, ?)");
-                parameters.add("%" + name + "%");
+                String[] tokens = name.split("\\s+");
+                StringBuilder fullQuery = new StringBuilder();
+                for (String token : tokens) {
+                    fullQuery.append(token).append("*").append(" ");
+                }
+                conditions.add("(MATCH (m.title) AGAINST (? IN BOOLEAN MODE)) OR edth(m.title, ?, ?)");
+                parameters.add(fullQuery.toString().trim());
                 parameters.add(name);
                 parameters.add(nameThreshold);
             }
