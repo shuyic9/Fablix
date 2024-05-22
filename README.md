@@ -114,12 +114,30 @@
       - This way, the connection will be reused and not closed after each query, which is more efficient than creating a new connection for each query.
 
     - #### Explain how Connection Pooling works with two backend SQL.
+      - The ```load balancer``` will establish a connection with either the master or the slave database.
+      - Since we are using ```connection pooling```, the connection will be reused and not closed after each query to make the connection more efficient.
 
 
 - # Master/Slave
     - #### Include the filename/path of all code/configuration files in GitHub of routing queries to Master/Slave SQL.
+      - [AddMovieServlet.java](src/AddMovieServlet.java)
+      - [AddStarServlet.java](src/AddStarServlet.java)
+      - [CartServlet.java](src/CartServlet.java)
+      - [ConfirmationServlet.java](src/ConfirmationServlet.java)
+      - [DashboardServlet.java](src/DashboardServlet.java)
+      - [LoginDashboardServlet.java](src/LoginDashboardServlet.java)
+      - [LoginServlet.java](src/LoginServlet.java)
+      - [MainServlet.java](src/MainServlet.java)
+      - [MovieListServlet.java](src/MovieListServlet.java)
+      - [PaymentServlet.java](src/PaymentServlet.java)
+      - [SingleMovieServlet.java](src/SingleMovieServlet.java)
+      - [SingleStarServlet.java](src/SingleStarServlet.java)
+      - [context.xml](WebContent/META-INF/context.xml)
+      - [web.xml](WebContent/WEB-INF/web.xml)
 
     - #### How read/write requests were routed to Master/Slave SQL?
+      - [AddMovieServlet.java](src/AddMovieServlet.java), [AddStarServlet.java](src/AddStarServlet.java), [PaymentServlet.java](src/PaymentServlet.java) are the servlets that write to the database, so they must be routed to the master database.
+      - For other servlets, they are read-only, so they are routed to either the master or the slave database.
   
 ## Substring Matching Design
 In order to search title, director, or stars:
