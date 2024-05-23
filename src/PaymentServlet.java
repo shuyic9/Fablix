@@ -25,7 +25,7 @@ public class PaymentServlet extends HttpServlet {
     public void init(ServletConfig config) {
         try {
             InitialContext initialContext = new InitialContext();
-            dataSource = (DataSource) initialContext.lookup("java:comp/env/jdbc/moviedb");
+            dataSource = (DataSource) initialContext.lookup("java:comp/env/jdbc/moviedbmaster");
         } catch (NamingException e) {
             e.printStackTrace();
         }

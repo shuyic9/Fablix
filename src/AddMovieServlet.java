@@ -21,7 +21,7 @@ public class AddMovieServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) {
         try {
-            dataSource = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/moviedb");
+            dataSource = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/moviedbmaster");
             System.out.println("DataSource lookup successful.");
         } catch (NamingException e) {
             e.printStackTrace();
