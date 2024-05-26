@@ -1,17 +1,9 @@
-<!-- This example is following frontend and backend separation.
-
-    This .html performs two steps:
-    1. Create a html template skeleton, with all the elements defined (some left empty) and named with ids.
-    2. Load cart.js to populate the data into empty elements.
-    -->
-
 <!doctype html>
 <html lang="en">
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
@@ -20,7 +12,6 @@
     <link rel="stylesheet" href="movie-list.css">
 
     <title>Movies</title>
-
 </head>
 <body>
 
@@ -32,17 +23,18 @@
     <div><a href="cart.html">Checkout</a></div>
     <div class="search-bar">
         <form id="search-form" action="movie-list.html" method="GET">
-            <input class="search-input" type="text" placeholder="Title" name="title" id="autocomplete" class="autocomplete-searchbox form-control"
-                   placeholder="Search Movie Titles">
-            <input class="search-input" type="text" placeholder="Year" name="year">
-            <input class="search-input" type="text" placeholder="Director" name="director">
-            <input class="search-input" type="text" placeholder="Star" name="star">
+            <label for="autocomplete">Title:</label>
+            <input class="search-input autocomplete-searchbox" type="text" placeholder="Title" name="title" id="autocomplete">
+            <label for="year">Year:</label>
+            <input class="search-input" type="text" placeholder="Year" name="year" id="year">
+            <label for="director">Director:</label>
+            <input class="search-input" type="text" placeholder="Director" name="director" id="director">
+            <label for="star">Star:</label>
+            <input class="search-input" type="text" placeholder="Star" name="star" id="star">
             <button type="submit">Search</button>
         </form>
     </div>
-<!--    <div><a href="/logout">Logout</a></div>-->
 </div>
-
 
 <div class="container mt-3">
     <div class="row mb-3">
@@ -72,7 +64,7 @@
     </div>
 
     <!-- Id "movieList_table" is useful for jQuery to find the html element with id, class here is mapping to Bootstrap defined class CSS -->
-    <table id=movieList_table class="table table-striped table-responsive">
+    <table id="movieList_table" class="table table-striped table-responsive">
         <!-- Create a table header -->
         <thead>
         <tr>
@@ -88,10 +80,8 @@
         </thead>
         <!-- Table body is left empty here, will be populated with the data retrieved with cart.js -->
         <!-- Again, id "movieList_table_body" is useful for jQuery to find this html element -->
-        <tbody id=movieList_table_body></tbody>
+        <tbody id="movieList_table_body"></tbody>
     </table>
-
-
 
     <div class="row">
         <div class="col-12 d-flex justify-content-center my-3">
@@ -131,6 +121,4 @@
 <script src="movie-list.js"></script>
 <script src="autocomplete.js"></script>
 </body>
-
-
 </html>
