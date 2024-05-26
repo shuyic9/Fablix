@@ -149,7 +149,7 @@ edth : boolean edth(string s1, string s1, integer th)
 
 ```edth``` returns true if the edit distance between s1 and s2 is smaller or equal than th. The function assumes that the strings have the same case (i.e., both strings are lower case or both are upper case).
   
-We implemented ```edth``` in our core searching logic in [MovieListServlet.java](src/MovieListServlet.java). In order to maintain high consistency for the search results, we used the following function to tune the threshold:
+We implemented ```edth``` in our core searching logic in [MovieListServlet.java](src/MovieListServlet.java) and [AutocompleteServlet.java](src/AutocompleteServlet.java). In order to maintain high consistency for the search results, we used the following function to tune the threshold:
 ```
 private int distanceThreshold(String query) {
     if (query.length() <= 4) {
