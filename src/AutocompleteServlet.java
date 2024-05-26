@@ -41,9 +41,9 @@ public class AutocompleteServlet extends HttpServlet {
         }
 
         try (Connection conn = dataSource.getConnection()) {
-            String sqlQuery = "SELECT id, title FROM movies WHERE title LIKE ? LIMIT 10";
+            String sqlQuery = "SELECT id, title FROM movies WHERE MATCH (title) AGAINST (? IN BOOLEAN MODE) LIMIT 10";
             PreparedStatement statement = conn.prepareStatement(sqlQuery);
-            statement.setString(1, "%" + query + "%");
+            statement.setString(1, query + "*");
             ResultSet rs = statement.executeQuery();
 
             while (rs.next()) {
@@ -59,6 +59,7 @@ public class AutocompleteServlet extends HttpServlet {
             e.printStackTrace();
         }
 
+        System.out.println("JSON Response: " + jsonArray.toString()); // Log the JSON response
         out.write(jsonArray.toString());
         out.close();
     }
@@ -68,7 +69,7 @@ public class AutocompleteServlet extends HttpServlet {
         jsonObject.addProperty("value", title);
 
         JsonObject additionalDataJsonObject = new JsonObject();
-        additionalDataJsonObject.addProperty("ID", id);
+        additionalDataJsonObject.addProperty("id", id);
 
         jsonObject.add("data", additionalDataJsonObject);
         return jsonObject;
