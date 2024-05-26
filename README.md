@@ -138,7 +138,30 @@
     - #### How read/write requests were routed to Master/Slave SQL?
       - [AddMovieServlet.java](src/AddMovieServlet.java), [AddStarServlet.java](src/AddStarServlet.java), [PaymentServlet.java](src/PaymentServlet.java) are the servlets that write to the database, so they must be routed to the master database.
       - For other servlets, they are read-only, so they are routed to either the master or the slave database.
+
+## Fuzzy Search Design
+We leveraged the power of ```User Defined Function(UDF)``` in SQL to implement the fuzzy search, specifically through a library called [Flamingo](https://flamingo.ics.uci.edu/toolkit/).
+
+Flamingo is a toolkit that powered by LEDA algorithm, which is implemented in C and C++. It can be accessed using the interface ```edth```. Here is how it works:
+```
+edth : boolean edth(string s1, string s1, integer th)
+```
+
+```edth``` returns true if the edit distance between s1 and s2 is smaller or equal than th. The function assumes that the strings have the same case (i.e., both strings are lower case or both are upper case).
   
+We implemented ```edth``` in our core searching logic in [MovieListServlet.java](src/MovieListServlet.java). In order to maintain high consistency for the search results, we used the following function to tune the threshold:
+```
+private int distanceThreshold(String query) {
+    if (query.length() <= 4) {
+        return 1;
+    } else if (query.length() <= 8) {
+        return 2;
+    } else {
+        return 3;
+    }
+}
+```
+
 ## Substring Matching Design
 In order to search title, director, or stars:
 ```
