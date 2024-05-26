@@ -91,7 +91,7 @@ public class MovieListServlet extends HttpServlet {
                 String[] tokens = name.split("\\s+");
                 StringBuilder fullQuery = new StringBuilder();
                 for (String token : tokens) {
-                    fullQuery.append(token).append("*").append(" ");
+                    fullQuery.append("+").append(token).append("*").append(" ");
                 }
                 conditions.add("(MATCH (m.title) AGAINST (? IN BOOLEAN MODE)) OR edth(m.title, ?, ?)");
                 parameters.add(fullQuery.toString().trim());

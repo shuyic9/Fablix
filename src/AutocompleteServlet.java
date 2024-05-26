@@ -41,9 +41,18 @@ public class AutocompleteServlet extends HttpServlet {
         }
 
         try (Connection conn = dataSource.getConnection()) {
-            String sqlQuery = "SELECT id, title FROM movies WHERE MATCH (title) AGAINST (? IN BOOLEAN MODE) LIMIT 10";
+            String[] tokens = query.split("\\s+");
+            StringBuilder fullQuery = new StringBuilder();
+            for (String token : tokens) {
+                fullQuery.append("+").append(token).append("*").append(" ");
+            }
+
+            int allowedMistakes = 2; // Set the threshold for allowed mistakes
+            String sqlQuery = "SELECT id, title FROM movies m WHERE (MATCH (m.title) AGAINST (? IN BOOLEAN MODE)) OR edth(m.title, ?, ?) = 1 LIMIT 10";
             PreparedStatement statement = conn.prepareStatement(sqlQuery);
-            statement.setString(1, query + "*");
+            statement.setString(1, fullQuery.toString().trim());
+            statement.setString(2, query);
+            statement.setInt(3, allowedMistakes);
             ResultSet rs = statement.executeQuery();
 
             while (rs.next()) {
