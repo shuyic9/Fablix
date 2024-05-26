@@ -21,7 +21,7 @@
         <div><a href="cart.html">Checkout</a></div>
         <div class="search-bar">
             <form id="search-form" action="movie-list.html" method="GET">
-                <input class="search-input" type="text" placeholder="Title" name="title">
+                <input class="search-input" type="text" placeholder="Title" name="title" id="autocomplete">
                 <input class="search-input" type="text" placeholder="Year" name="year">
                 <input class="search-input" type="text" placeholder="Director" name="director">
                 <input class="search-input" type="text" placeholder="Star" name="star">
@@ -46,6 +46,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.devbridge-autocomplete/1.4.11/jquery.autocomplete.min.js"></script>
 
     <script>
         function goBackToList() {
