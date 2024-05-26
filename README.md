@@ -3,7 +3,7 @@
 
     - #### Names: Jun Xia & Shuyi Chen
 
-    - #### Project 4 Video Demo Link:
+    - #### Project 4 Video Demo Link: https://youtu.be/c_WPhxnGlGU
 
     - #### Instruction of deployment:
       - On AWS instance, clone project 4:
