@@ -14,7 +14,7 @@ function handleLoginResult(resultDataJson) {
     } else {
         // If login fails, display an alert with the error message
         alert(resultDataJson["message"]);
-        grecaptcha.reset();
+        //grecaptcha.reset();
     }
 }
 
