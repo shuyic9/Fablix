@@ -25,7 +25,7 @@ $(document).ready(function() {
 
         let email = loginDashboardForm.find("input[name='username']").val().trim();
         let password = loginDashboardForm.find("input[name='password']").val().trim();
-        let recaptchaResponse = $("#g-recaptcha-response").val(); // Fetch the reCAPTCHA response
+        //let recaptchaResponse = $("#g-recaptcha-response").val(); // Fetch the reCAPTCHA response
 
         // Basic validation of input fields
         if (email === "") {
@@ -34,10 +34,12 @@ $(document).ready(function() {
         } else if (password === "") {
             alert("Please fill out the password field.");
             return;
-        } else if (recaptchaResponse === "") {
+        }
+        /* else if (recaptchaResponse === "") {
             alert("Please verify that you are not a robot.");
             return;
         }
+        */
 
         // Send the AJAX request to the new employee dashboard login endpoint
         $.ajax({
