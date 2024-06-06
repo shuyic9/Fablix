@@ -3,7 +3,7 @@
 
     - #### Names: Jun Xia & Shuyi Chen
 
-    - #### Project 5 Video Demo Link:
+    - #### Project 5 Video Demo Link: https://youtu.be/qTPZpi9BtSk
 
   - #### Throughput:
     - For 1 Control Plane + 3 Worker nodes + 1 master MySQL pod + 1 slave MySQL pod + 2 Fabflix pods: ```11,690.666/minute```
