@@ -12,7 +12,7 @@
         type="javax.sql.DataSource"
         username="murphyuser"
         password="My7$Password"
-        url="jdbc:mysql://mysql-primary:3306/moviedb?autoReconnect=true&amp;allowPublicKeyRetrieval=true&amp;useSSL=false&amp;cachePrepStmts=true"
+        url="jdbc:mysql://mysql-secondary:3306/moviedb?autoReconnect=true&amp;allowPublicKeyRetrieval=true&amp;useSSL=false&amp;cachePrepStmts=true"
     />
 
     <!-- Defines a Data Source Connecting to master moviedb-->
@@ -23,6 +23,6 @@
         type="javax.sql.DataSource"
         username="murphyuser"
         password="My7$Password"
-        url="jdbc:mysql://mysql-secondary:3306/moviedb?autoReconnect=true&amp;allowPublicKeyRetrieval=true&amp;useSSL=false&amp;cachePrepStmts=true"
+        url="jdbc:mysql://mysql-primary:3306/moviedb?autoReconnect=true&amp;allowPublicKeyRetrieval=true&amp;useSSL=false&amp;cachePrepStmts=true"
     />
 </Context>
