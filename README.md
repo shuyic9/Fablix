@@ -46,6 +46,9 @@
     - Master-Slave Replication
     - Load balancing
     - Fuzzy Search
+    - Setting up Docker
+    - Setting up Kubernetes
+    - Setting up JMeter
     ```
 
   - shuyic9 (Shuyi Chen)
@@ -65,6 +68,9 @@
     - Adding HTTPS
     - Implementing a Dashboard using Stored Procedure
     - AutoComplete Search
+    - Setting up Docker
+    - Setting up Kubernetes
+    - Setting up JMeter
     ```
 
 
