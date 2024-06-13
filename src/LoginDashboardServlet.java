@@ -32,9 +32,10 @@ public class LoginDashboardServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String email = request.getParameter("username"); // Retrieve email (username) from the request
         String password = request.getParameter("password");
-        String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
+        //String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
         JsonObject responseJsonObject = new JsonObject();
 
+        /*
         try {
             // This method should verify the reCAPTCHA response
             RecaptchaVerifyUtils.verify(gRecaptchaResponse);
@@ -45,6 +46,7 @@ public class LoginDashboardServlet extends HttpServlet {
             response.getWriter().write(responseJsonObject.toString());
             return;
         }
+         */
 
         try (Connection conn = dataSource.getConnection()) {
             // Use SQL to fetch email and password only

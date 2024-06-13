@@ -48,11 +48,12 @@ public class AutocompleteServlet extends HttpServlet {
             }
 
             int allowedMistakes = 2; // Set the threshold for allowed mistakes
-            String sqlQuery = "SELECT id, title FROM movies m WHERE (MATCH (m.title) AGAINST (? IN BOOLEAN MODE)) OR edth(m.title, ?, ?) = 1 LIMIT 10";
+//            String sqlQuery = "SELECT id, title FROM movies m WHERE (MATCH (m.title) AGAINST (? IN BOOLEAN MODE)) OR edth(m.title, ?, ?) = 1 LIMIT 10";
+            String sqlQuery = "SELECT id, title FROM movies m WHERE (MATCH (m.title) AGAINST (? IN BOOLEAN MODE))";
             PreparedStatement statement = conn.prepareStatement(sqlQuery);
             statement.setString(1, fullQuery.toString().trim());
-            statement.setString(2, query);
-            statement.setInt(3, allowedMistakes);
+//            statement.setString(2, query);
+//            statement.setInt(3, allowedMistakes);
             ResultSet rs = statement.executeQuery();
 
             while (rs.next()) {

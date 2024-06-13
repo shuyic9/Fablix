@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment # Specifies that this resource is a Deployment, used for managing a set of replicas of a pod.
+metadata:
+  name: fablix-movies # Names this Deployment as "fablix-movies".
+spec:
+  replicas: 2 # Indicates that two replicas (pods) of the application should be running.
+  selector:
+    matchLabels:
+      app: fablix-movies # The selector specifies that this Deployment targets pods with the label "app: fablix-movies".
+  template:
+    metadata:
+      labels:
+        app: fablix-movies # Labels the pods with "app: fablix-movies" to match the selector.
+    spec:
+      containers:
+        - name: fablix-movies-container # Names the container within the pod as "fablix-movies-container".
+          image: jackyzzz076/cs122b-p5-fablix:v5 # Uses the Docker image "https://hub.docker.com/repository/docker/jackyzzz076/cs122b-p5-fablix" for the container.
+          ports:
+            - name: http
+              containerPort: 8080 # Exposes port 8080 of the container.
+          resources:
+            limits:
+              cpu: "1" # Limits the container to use at most 1 CPU.
+              memory: "1Gi" # Limits the container to use at most 1 GiB of memory.
+      imagePullSecrets: # Specifies the secret to use for pulling private images from DockerHub.
+        - name: regcred #  References a Kubernetes secret named "regcred".
+---
+apiVersion: v1
+kind: Service # Specifies that this resource is a Service, which defines a logical set of pods and a policy to access them.
+metadata:
+  name: fablix-movies-service # Names this Service as "fablix-movies-service".
+spec:
+  selector:
+    app: fablix-movies # The selector specifies that this Service targets pods with the label "app: fablix-movies".
+  ports:
+    - name: http
+      port: 8080 # Exposes the service on port 8080.
+  type: ClusterIP # Specifies that the service is of type ClusterIP, making it accessible only within the cluster.
